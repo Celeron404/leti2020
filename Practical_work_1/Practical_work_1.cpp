@@ -4,6 +4,7 @@
 using namespace std;
 
 void toBinary(int);
+void floatToBinary(int);
 
 int main()
 {
@@ -22,28 +23,38 @@ int main()
 		<< "bool \t\t" << sizeof(bool) << " байт. \n \n";
 
 	cout << "\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";//			Решение второго задания
+	float input;
 	while (true) {
 		cout << "Введите любое целое число диапазона int... \n";
-		double input;
 		cin >> input;
 
-
-		if (cin.fail())
-		{
-			cin.clear();
-			cin.ignore(32767, '\n');
-			cout << "Ошибка! Введены некорректные данные. \n";
-			continue;
-		} else
 		if (static_cast<int>(input) != input) { // Проверка на целое число
 			cout << "Необходимо ввести целое число! \n";
 			continue;
 		}
 		
 		cout << "Двоичное представление в памяти числа " << input << ": ";
-		toBinary(input);
+		toBinary(int(input));
 
-		cout << "\nДля повтора введите 1, иначе произойдёт переход к следующему заданию... \n";
+		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";
+		int answer;
+		cin >> answer;
+		if (answer != 1)
+			break;
+	}
+
+	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";//			Решение третьего задания
+	union {
+		float inputF;
+		int inputL;
+	};
+	while (true) {
+		cout << "Введите любое число диапазона float... \n";
+		cin >> inputF;
+
+		cout << "Двоичное представление в памяти числа " << inputF << ": ";
+		floatToBinary(inputL);
+		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
 		int answer;
 		cin >> answer;
 		if (answer != 1)
@@ -73,11 +84,17 @@ void toBinary(int value) {
 		*/
 		putchar(value & mask ? '1' : '0');
 		value <<= 1;
-		if (i % 8 == 0)
-			putchar(' '); // отделение друг от друга байтов, содержащих значение числа
-		if (i == 1)
-			putchar(' '); // отделение знакового бита
+		if (i % 8 == 0 || i == 1)
+			putchar(' '); // отделение друг от друга байтов, содержащих значение числа, а также знакового бита
 	}
 }
 
-//void toBinary()
+void floatToBinary(int value) {
+	int mask = 1 << 31;
+	for (int i = 1; i <= 32; i++) {
+		putchar(value & mask ? '1' : '0');
+		value <<= 1;
+		if (i == 1 || i == 9)
+			putchar(' '); // отделение друг от друга битов мантиссы и порядка, а также знакового бита
+	}
+}
