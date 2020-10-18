@@ -1,14 +1,14 @@
 ﻿#include "pch.h"
 #include <iostream>
-
 using namespace std;
 
-void toBinary(int);
-void floatToBinary(int);
 void solution1();
 void solution2();
 void solution3();
-//void solution4();
+void solution4();
+void toBinary(int);
+void floatToBinary(int);
+void doubleToBinary(int, int);
 
 int main()
 {
@@ -19,8 +19,9 @@ int main()
 	solution1();
 	solution2();
 	solution3();
-	//solution4();
+	solution4();
 
+	cout << "Завершение работы программы. \n";
 	system("pause");
 	return 0;
 }
@@ -63,15 +64,15 @@ void solution2() { // Решение второго задания
 void solution3() { // Решение третьего задания
 	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";		
 	union {
-		float inputF;
-		int inputL;
+		float inputFloat;
+		int inputInt;
 	};
 	while (true) {
 		cout << "Введите любое число диапазона float... \n";
-		cin >> inputF;
+		cin >> inputFloat;
 
-		cout << "Двоичное представление в памяти числа " << inputF << ": ";
-		floatToBinary(inputL);
+		cout << "Двоичное представление в памяти числа " << inputFloat << ": ";
+		floatToBinary(inputInt);
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
 			int answer;
 		cin >> answer;
@@ -80,8 +81,24 @@ void solution3() { // Решение третьего задания
 	}
 }
 
-void solution4() {
+void solution4() { // Решение четвёртого задания
+	cout << "\tЗадание 4: двоичное представление в памяти (все разряды) числа типа double \n";
+	union {
+		double inputDouble;
+		int inputInt[2] = { NULL, NULL };
+	};
+	while (true) {
+		cout << "Введите любое число диапазона double... \n";
+		cin >> inputDouble;
 
+		cout << "Двоичное представление в памяти числа " << inputDouble << ": ";
+		doubleToBinary(inputInt[1], inputInt[0]);
+		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
+			int answer;
+		cin >> answer;
+		if (answer != 1)
+			break;
+	}
 }
 
 void toBinary(int value) {
@@ -115,5 +132,19 @@ void floatToBinary(int value) {
 		value <<= 1;
 		if (i == 1 || i == 9)
 			putchar(' '); // отделение друг от друга битов мантиссы и порядка, а также знакового бита
+	}
+}
+
+void doubleToBinary(int firstPart, int secondPart) {
+	int mask = 1 << 31;
+	for (int i = 1; i <= 32; i++) {
+		putchar(firstPart & mask ? '1' : '0');
+		firstPart <<= 1;
+		if (i == 1 || i == 12)
+			putchar(' '); // отделение друг от друга битов мантиссы и порядка, а также знакового бита
+	}
+	for (int i = 1; i <= 32; i++) {
+		putchar(secondPart & mask ? '1' : '0');
+		secondPart <<= 1;
 	}
 }
