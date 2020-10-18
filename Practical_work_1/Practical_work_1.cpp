@@ -5,14 +5,28 @@ using namespace std;
 
 void toBinary(int);
 void floatToBinary(int);
+void solution1();
+void solution2();
+void solution3();
+//void solution4();
 
 int main()
 {
 	setlocale(0, "");
 	cout << "Данная программа является решением первой практической работы \n"
 		<< "\"Типы данных и их внутреннее представление в памяти\" \n \n";
+	
+	solution1();
+	solution2();
+	solution3();
+	//solution4();
 
-	cout << "\tЗадание 1: размер данных на компьютере \n"//												Решение первого задания
+	system("pause");
+	return 0;
+}
+
+void solution1() { // Решение первого задания
+	cout << "\tЗадание 1: размер данных на компьютере \n"
 		<< "int: \t\t" << sizeof(int) << " байта. \n"
 		<< "short int \t" << sizeof(short int) << " байта. \n"
 		<< "long int \t" << sizeof(long int) << " байта. \n"
@@ -21,8 +35,10 @@ int main()
 		<< "long double \t" << sizeof(long double) << " байтов. \n"
 		<< "char \t\t" << sizeof(char) << " байт. \n"
 		<< "bool \t\t" << sizeof(bool) << " байт. \n \n";
+}
 
-	cout << "\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";//			Решение второго задания
+void solution2() { // Решение второго задания
+	cout << "\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";
 	float input;
 	while (true) {
 		cout << "Введите любое целое число диапазона int... \n";
@@ -32,7 +48,7 @@ int main()
 			cout << "Необходимо ввести целое число! \n";
 			continue;
 		}
-		
+
 		cout << "Двоичное представление в памяти числа " << input << ": ";
 		toBinary(int(input));
 
@@ -42,8 +58,10 @@ int main()
 		if (answer != 1)
 			break;
 	}
+}
 
-	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";//			Решение третьего задания
+void solution3() { // Решение третьего задания
+	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";		
 	union {
 		float inputF;
 		int inputL;
@@ -55,14 +73,15 @@ int main()
 		cout << "Двоичное представление в памяти числа " << inputF << ": ";
 		floatToBinary(inputL);
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
-		int answer;
+			int answer;
 		cin >> answer;
 		if (answer != 1)
 			break;
 	}
+}
 
-	system("pause");
-	return 0;
+void solution4() {
+
 }
 
 void toBinary(int value) {
