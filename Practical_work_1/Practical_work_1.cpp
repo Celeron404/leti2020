@@ -5,6 +5,11 @@ using namespace std;
 
 void toBinary(int);
 void floatToBinary(int);
+void solution1();
+void solution2();
+void solution3();
+short choiseNextAction();
+bool checkBuffer();
 
 int main()
 {
@@ -12,19 +17,46 @@ int main()
 	cout << "Данная программа является решением первой практической работы \n"
 		<< "\"Типы данных и их внутреннее представление в памяти\" \n \n";
 
-	cout << "\tЗадание 1: размер данных на компьютере \n"//												Решение первого задания
-		<< "int: \t\t" << sizeof(int) << " байта. \n"
-		<< "short int \t" << sizeof(short int) << " байта. \n"
-		<< "long int \t" << sizeof(long int) << " байта. \n"
-		<< "float \t\t" << sizeof(float) << " байта. \n"
-		<< "double \t\t" << sizeof(double) << " байтов. \n"
-		<< "long double \t" << sizeof(long double) << " байтов. \n"
-		<< "char \t\t" << sizeof(char) << " байт. \n"
-		<< "bool \t\t" << sizeof(bool) << " байт. \n \n";
-
-	cout << "\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";//			Решение второго задания
-	float input;
+		short solution;
 	while (true) {
+		cout << "Введите номер задания (1-4), для завершения программы введите 42... \n";
+		cin >> solution;
+		switch (solution) {
+		case 1:
+			solution1();
+		case 2:
+			solution2();
+		case 3:
+			solution3();
+		case 42:
+			return 0;
+		default:
+			cout << "Введено некорректное значение! \n";
+		}
+	}
+}
+
+void solution1() { // Решение первого задания
+	short action = 1;
+	while (action == 1) {
+		cout << "\n \tЗадание 1: размер данных на компьютере \n"
+			<< "int: \t\t" << sizeof(int) << " байта. \n"
+			<< "short int \t" << sizeof(short int) << " байта. \n"
+			<< "long int \t" << sizeof(long int) << " байта. \n"
+			<< "float \t\t" << sizeof(float) << " байта. \n"
+			<< "double \t\t" << sizeof(double) << " байтов. \n"
+			<< "long double \t" << sizeof(long double) << " байтов. \n"
+			<< "char \t\t" << sizeof(char) << " байт. \n"
+			<< "bool \t\t" << sizeof(bool) << " байт. \n \n";
+		action = choiseNextAction();
+	}
+}
+
+void solution2() { // Решение второго задания
+	cout << "\n \tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";
+	float input;
+	short action = 1;
+	while (action == 1) {
 		cout << "Введите любое целое число диапазона int... \n";
 		cin >> input;
 
@@ -32,18 +64,16 @@ int main()
 			cout << "Необходимо ввести целое число! \n";
 			continue;
 		}
-		
+
 		cout << "Двоичное представление в памяти числа " << input << ": ";
 		toBinary(int(input));
 
-		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";
-		int answer;
-		cin >> answer;
-		if (answer != 1)
-			break;
+		choiseNextAction();
 	}
+}
 
-	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";//			Решение третьего задания
+void solution3() { // Решение третьего задания
+	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";
 	union {
 		float inputF;
 		int inputL;
@@ -54,15 +84,44 @@ int main()
 
 		cout << "Двоичное представление в памяти числа " << inputF << ": ";
 		floatToBinary(inputL);
-		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
-		int answer;
-		cin >> answer;
-		if (answer != 1)
-			break;
-	}
 
-	system("pause");
-	return 0;
+		choiseNextAction();
+	}
+}
+
+void solution4() {
+
+}
+
+short choiseNextAction() {
+	cout << "\nДля повтора введите 1, для перехода к следующему заданию введите 2, для возврата в меню введите 3... \n";
+	short answer;
+	cin >> answer;
+	switch (answer) {
+	case 1:
+		return 1;
+		break;
+	case 2:
+		return 2;
+		break;
+	case 3:
+		return 3;
+		break;
+	default:
+		cout << "\nВведено некорректное значение! \n";
+	}
+}
+
+bool checkBuffer() {
+	if (cin.fail()) {
+		cout << "\nВведено некорректное значение! \n";
+		cin.clear();
+		while (cin.get() != '\n')
+			cin.ignore(cin.rdbuf()->in_avail());
+		return false;
+	}
+	else
+		return true;
 }
 
 void toBinary(int value) {
