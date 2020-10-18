@@ -44,6 +44,8 @@ void binaryPresentation(int value) {/*
 
 	unsigned int order = 32; // Количество разрядов
 	unsigned int mask = 1 << order - 1; // Маска побитового сравнения
+	cout << endl << "order = " << order << endl
+		<< "mask = " << mask << endl;
 	for (int i = 1; i <= order; i++)
 	{
 		putchar(value & mask ? '1' : '0');
@@ -57,5 +59,6 @@ void binaryPresentation(int value) {/*
 			putchar(' ');
 		}
 	}
-
-	}
+	cout << endl << "order = " << order << endl
+		<< "mask = " << mask << endl;
+}
