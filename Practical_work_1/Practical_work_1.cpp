@@ -6,7 +6,7 @@ void solution1();
 void solution2();
 void solution3();
 void solution4();
-void toBinary(int);
+void intToBinary(int);
 void floatToBinary(int);
 void doubleToBinary(int, int);
 
@@ -51,7 +51,7 @@ void solution2() { // Решение второго задания
 		}
 
 		cout << "Двоичное представление в памяти числа " << input << ": ";
-		toBinary(int(input));
+		intToBinary(int(input));
 
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";
 		int answer;
@@ -101,7 +101,7 @@ void solution4() { // Решение четвёртого задания
 	}
 }
 
-void toBinary(int value) {
+void intToBinary(int value) {
 	int mask = 1 << 31; // Маска представляет собой 2^32, то есть 10...00, где нулей 31.
 	for (int i = 1; i <= 32; i++) {
 		/*
