@@ -9,6 +9,10 @@ void solution4();
 void intToBinary(int);
 void floatToBinary(int);
 void doubleToBinary(int, int);
+bool checkInput();
+int readInt();
+float readFloat();
+double readDouble();
 
 int main()
 {
@@ -26,7 +30,8 @@ int main()
 	return 0;
 }
 
-void solution1() { // Решение первого задания
+// Решение первого задания
+void solution1() { 
 	cout << "\tЗадание 1: размер данных на компьютере \n"
 		<< "int: \t\t" << sizeof(int) << " байта. \n"
 		<< "short int \t" << sizeof(short int) << " байта. \n"
@@ -38,30 +43,30 @@ void solution1() { // Решение первого задания
 		<< "bool \t\t" << sizeof(bool) << " байт. \n \n";
 }
 
-void solution2() { // Решение второго задания
+// Решение второго задания
+void solution2() { 
 	cout << "\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";
-	float input;
+	int input;
 	while (true) {
 		cout << "Введите любое целое число диапазона int... \n";
-		cin >> input;
-
-		if (static_cast<int>(input) != input) { // Проверка на целое число
-			cout << "Необходимо ввести целое число! \n";
-			continue;
-		}
-
+		// Считывание целого числа с проверками на некорректные значения.
+		input = readInt();
 		cout << "Двоичное представление в памяти числа " << input << ": ";
 		intToBinary(int(input));
 
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";
 		int answer;
 		cin >> answer;
+		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
+		if (!checkInput())
+			continue;
 		if (answer != 1)
 			break;
 	}
 }
 
-void solution3() { // Решение третьего задания
+// Решение третьего задания
+void solution3() { 
 	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";		
 	union {
 		float inputFloat;
@@ -69,13 +74,17 @@ void solution3() { // Решение третьего задания
 	};
 	while (true) {
 		cout << "Введите любое число диапазона float... \n";
-		cin >> inputFloat;
+		// Считывание float числа с проверкой на некорректные значения.
+		inputFloat = readFloat();
 
 		cout << "Двоичное представление в памяти числа " << inputFloat << ": ";
 		floatToBinary(inputInt);
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
 			int answer;
 		cin >> answer;
+		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
+		if (!checkInput())
+			continue;
 		if (answer != 1)
 			break;
 	}
@@ -89,13 +98,17 @@ void solution4() { // Решение четвёртого задания
 	};
 	while (true) {
 		cout << "Введите любое число диапазона double... \n";
-		cin >> inputDouble;
+		// Считывание double числа с проверкой на некорректные значения.
+		inputDouble = readDouble();
 
 		cout << "Двоичное представление в памяти числа " << inputDouble << ": ";
 		doubleToBinary(inputInt[1], inputInt[0]);
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любое другое число... \n";\
 			int answer;
 		cin >> answer;
+		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
+		if (!checkInput())
+			continue;
 		if (answer != 1)
 			break;
 	}
@@ -147,4 +160,62 @@ void doubleToBinary(int firstPart, int secondPart) {
 		putchar(secondPart & mask ? '1' : '0');
 		secondPart <<= 1;
 	}
+}
+
+bool checkInput() {
+	bool fail = true;
+	do
+	{
+		// Если есть ошибка, выводим сообщение
+		if (cin.fail()) {
+			cout << "Введено некорректное значение! Попробуйте ещё раз..." << endl;
+			// Восстановили поток
+			cin.clear();
+			// Почистили поток
+			while (cin.get() != '\n');
+			cin.ignore(cin.rdbuf()->in_avail());
+			return false;
+		}
+		else
+			fail = false;
+		return true;
+	} while (fail);
+}
+
+int readInt() {
+	float input;
+	while (true) {
+		cin >> input;
+		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
+		if (!checkInput())
+			continue;
+		// Проверка на целое число
+		if (static_cast<int>(input) != input) {
+			cout << "Необходимо ввести целое число! Попробуйте ещё раз...\n";
+			continue;
+		}
+		return int(input);
+	}
+}
+
+float readFloat() {
+	float input;
+	while (true) {
+		cin >> input;
+		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
+		if (!checkInput())
+			continue;
+	}
+	return input;
+}
+
+double readDouble() {
+	double input;
+	while (true) {
+		cin >> input;
+		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
+		if (!checkInput())
+			continue;
+	}
+	return input;
 }
