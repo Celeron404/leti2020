@@ -9,10 +9,7 @@ void solution4();
 void intToBinary(int);
 void floatToBinary(int);
 void doubleToBinary(int, int);
-bool checkInput();
 int readInt();
-float readFloat();
-double readDouble();
 
 int main()
 {
@@ -40,26 +37,23 @@ void solution1() {
 		<< "double \t\t" << sizeof(double) << " байтов. \n"
 		<< "long double \t" << sizeof(long double) << " байтов. \n"
 		<< "char \t\t" << sizeof(char) << " байт. \n"
-		<< "bool \t\t" << sizeof(bool) << " байт. \n \n";
+		<< "bool \t\t" << sizeof(bool) << " байт. \n";
 }
 
 // Решение второго задания
 void solution2() { 
-	cout << "\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";
+	cout << "\n\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";
 	int input;
 	while (true) {
 		cout << "Введите любое целое число диапазона int... \n";
-		// Считывание целого числа с проверками на некорректные значения.
+		// Считывание числа с проверкой на принадлежность к целым числам.
 		input = readInt();
 		cout << "Двоичное представление в памяти числа " << input << ": ";
 		intToBinary(int(input));
 
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n";
-		int answer;
+		short answer;
 		cin >> answer;
-		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
-		if (!checkInput())
-			continue;
 		if (answer != 1)
 			break;
 	}
@@ -67,48 +61,40 @@ void solution2() {
 
 // Решение третьего задания
 void solution3() { 
-	cout << "\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";		
+	cout << "\n\tЗадание 3: двоичное представление в памяти (все разряды) числа типа float \n";		
 	union {
 		float inputFloat;
 		int inputInt;
 	};
 	while (true) {
 		cout << "Введите любое число диапазона float... \n";
-		// Считывание float числа с проверкой на некорректные значения.
-		inputFloat = readFloat();
+		cin >> inputFloat;
 		cout << "Двоичное представление в памяти числа " << inputFloat << ": ";
 		floatToBinary(inputInt);
 
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n";\
-			int answer;
+		short answer;
 		cin >> answer;
-		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
-		if (!checkInput())
-			continue;
 		if (answer != 1)
 			break;
 	}
 }
 
 void solution4() { // Решение четвёртого задания
-	cout << "\tЗадание 4: двоичное представление в памяти (все разряды) числа типа double \n";
+	cout << "\n\tЗадание 4: двоичное представление в памяти (все разряды) числа типа double \n";
 	union {
 		double inputDouble;
 		int inputInt[2] = { NULL, NULL };
 	};
 	while (true) {
 		cout << "Введите любое число диапазона double... \n";
-		// Считывание double числа с проверкой на некорректные значения.
-		inputDouble = readDouble();
+		cin >> inputDouble;
 		cout << "Двоичное представление в памяти числа " << inputDouble << ": ";
 		doubleToBinary(inputInt[1], inputInt[0]);
 
-		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n";\
-			int answer;
+		cout << "\nДля повтора введите 1, для завершения работы программы введите любую другую цифру... \n";\
+		short answer;
 		cin >> answer;
-		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
-		if (!checkInput())
-			continue;
 		if (answer != 1)
 			break;
 	}
@@ -166,9 +152,6 @@ int readInt() {
 	float input;
 	while (true) {
 		cin >> input;
-		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
-		if (!checkInput())
-			continue;
 		// Проверка на целое число
 		if (static_cast<int>(input) != input) {
 			cout << "Необходимо ввести целое число! Попробуйте ещё раз...\n";
@@ -176,46 +159,4 @@ int readInt() {
 		}
 		return int(input);
 	}
-}
-
-float readFloat() {
-	float input;
-	while (true) {
-		cin >> input;
-		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
-		if (!checkInput())
-			continue;
-	}
-	return input;
-}
-
-double readDouble() {
-	double input;
-	while (true) {
-		cin >> input;
-		// Проверка на некорректное значение. Если она неуспешна, происходит демонстрация ошибки и переход к следующей итерации цикла.
-		if (!checkInput())
-			continue;
-	}
-	return input;
-}
-
-bool checkInput() {
-	bool fail = true;
-	do
-	{
-		// Если есть ошибка, выводим сообщение
-		if (cin.fail()) {
-			cout << "Введено некорректное значение! Попробуйте ещё раз..." << endl;
-			// Восстановили поток
-			cin.clear();
-			// Почистили поток
-			while (cin.get() != '\n');
-			cin.ignore(cin.rdbuf()->in_avail());
-			return false;
-		}
-		else
-			fail = false;
-		return true;
-	} while (fail);
 }
