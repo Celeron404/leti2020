@@ -45,13 +45,13 @@ void solution2() {
 	cout << "\n\tЗадание 2: двоичное представление в памяти (все разряды) числа типа int \n";
 	int input;
 	while (true) {
-		cout << "Введите любое целое число диапазона int... \n";
+		cout << "Введите любое целое число диапазона int... \n>> ";
 		// Считывание числа с проверкой на принадлежность к целым числам.
 		input = readInt();
 		cout << "Двоичное представление в памяти числа " << input << ": ";
 		intToBinary(int(input));
 
-		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n";
+		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n>> ";
 		short answer;
 		cin >> answer;
 		if (answer != 1)
@@ -67,12 +67,12 @@ void solution3() {
 		int inputInt;
 	};
 	while (true) {
-		cout << "Введите любое число диапазона float... \n";
+		cout << "Введите любое число диапазона float... \n>> ";
 		cin >> inputFloat;
 		cout << "Двоичное представление в памяти числа " << inputFloat << ": ";
 		floatToBinary(inputInt);
 
-		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n";\
+		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n>> ";\
 		short answer;
 		cin >> answer;
 		if (answer != 1)
@@ -87,12 +87,12 @@ void solution4() { // Решение четвёртого задания
 		int inputInt[2] = { NULL, NULL };
 	};
 	while (true) {
-		cout << "Введите любое число диапазона double... \n";
+		cout << "Введите любое число диапазона double... \n>> ";
 		cin >> inputDouble;
-		cout << "Двоичное представление в памяти числа " << inputDouble << ": ";
+		cout << "Двоичное представление в памяти числа " << inputDouble << ":\n";
 		doubleToBinary(inputInt[1], inputInt[0]);
 
-		cout << "\nДля повтора введите 1, для завершения работы программы введите любую другую цифру... \n";\
+		cout << "\nДля повтора введите 1, для завершения работы программы введите любую другую цифру... \n>> ";\
 		short answer;
 		cin >> answer;
 		if (answer != 1)
@@ -149,12 +149,12 @@ void doubleToBinary(int firstPart, int secondPart) {
 }
 
 int readInt() {
-	float input;
+	double input;
 	while (true) {
 		cin >> input;
 		// Проверка на целое число
 		if (static_cast<int>(input) != input) {
-			cout << "Необходимо ввести целое число! Попробуйте ещё раз...\n";
+			cout << "Необходимо ввести целое число диапазона int! Попробуйте ещё раз...\n";
 			continue;
 		}
 		return int(input);
