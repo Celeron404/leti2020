@@ -6,10 +6,12 @@ void solution1();
 void solution2();
 void solution3();
 void solution4();
+void additionalSolution();
 void intToBinary(int);
 void floatToBinary(int);
 void doubleToBinary(int, int);
 int readInt();
+void intToBinary(int, short[]);
 
 int main()
 {
@@ -23,6 +25,7 @@ int main()
 	solution2();
 	solution3();
 	solution4();
+	additionalSolution();
 
 	cout << "Завершение работы программы. \n";
 	system("pause");
@@ -51,7 +54,7 @@ void solution2() {
 		// Считывание числа с проверкой на принадлежность к целым числам.
 		input = readInt();
 		cout << "Двоичное представление в памяти числа " << input << ": ";
-		intToBinary(int(input));
+		intToBinary(input);
 
 		cout << "\nДля повтора введите 1, для перехода к следующему заданию введите любую другую цифру... \n>> ";
 		short answer;
@@ -94,7 +97,47 @@ void solution4() { // Решение четвёртого задания
 		cout << "Двоичное представление в памяти числа " << inputDouble << ":\n";
 		doubleToBinary(inputInt[1], inputInt[0]);
 
-		cout << "\nДля повтора введите 1, для завершения работы программы введите любую другую цифру... \n>> ";\
+		cout << "\nДля повтора введите 1, для перехода к дополнительному заданию введите любую другую цифру... \n>> ";
+		short answer;
+		cin >> answer;
+		if (answer != 1)
+			break;
+	}
+}
+
+void additionalSolution() { // Решение дополнительного задания
+	cout << "\n\tДополнительное задание: Возможность инвертировать все биты, кроме битов, \n"
+		<< "номера которых вводятся пользователем с клавиатуры, для всех затронутых типов данных. \n";
+
+	int input;
+	while (true) {
+		short notInvertedBits[64];
+		cout << "Введите любое целое число диапазона int... \n>> ";
+		// Считывание числа с проверкой на принадлежность к целым числам.
+		input = readInt();
+		
+		cout << "Введите номер бита, который не нужно инвертировать (от 1 до 64). \n"
+			<< "Для окончания ввода введите 0... \n>> ";
+		short inputCounter = 1;
+		while (true) {
+			short input;
+			cin >> input;
+			if (input != 0)
+				if ((input >= 1) && (input <= 64)) {
+					notInvertedBits[inputCounter - 1] = input; // Введённые числа записываются в массив размерностью 64.
+					inputCounter++;
+				}
+				else
+					cout << "Введено некорректное значение! \n";
+			else break;
+		};
+
+		cout << "Двоичное представление в памяти числа " << input << ": ";
+		intToBinary(input);
+		cout << "Инвертированное представление числа (кроме указанных ранее битов) " << input << ": ";
+		intToBinary(input, notInvertedBits);
+
+		cout << "\nДля повтора введите 1, для перехода к следующему типу введите любую другую цифру... \n>> ";
 		short answer;
 		cin >> answer;
 		if (answer != 1)
@@ -161,4 +204,28 @@ int readInt() {
 		}
 		return int(input);
 	}
+}
+
+void intToBinary(int input, short notInvertedBits[]) {
+	int mask = 1 << 31; // Маска представляет собой 2^32, то есть 10...00, где нулей 31.
+	for (int i = 1; i <= 32; i++) {
+		if (!arrayContains(i, notInvertedBits[]))
+			putchar(value & mask ? '0' : '1'); // Бит инвертируется если ранее не было указано, что это не должно происходить.
+		else
+		{
+			putchar(value & mask ? '1' : '0'); // Иначе бит не инвертируется
+		}
+		value <<= 1;
+		if (i % 8 == 0 || i == 1)
+			putchar(' '); // отделение друг от друга байтов, содержащих значение числа, а также знакового бита
+	}
+}
+
+// Если переданное в функцию значение совпадает с любым элементом массива, возвращается true, иначе false.
+bool arrayContains(int i, short notInvertedBits[]) {
+	for (short element : notInvertedBits) {
+		if (element != 0) && (element = i)
+			return true;
+	}
+	return false;
 }
