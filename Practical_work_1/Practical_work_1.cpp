@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include <iostream>
+#include <windows.h>
 using namespace std;
 
 void solution1();
@@ -13,7 +14,15 @@ int readInt();
 
 int main()
 {
-	setlocale(0, "");
+	//setlocale(LC_ALL, "Russian");
+	//system("chcp 1251");
+	/*
+	Работающий русский язык:
+	SetConsoleOutputCP(CP_UTF8);
+	auto message = u8"Тест тест";
+	wprintf(L"%S", message);
+	*/
+
 	cout << "Данная программа является решением первой практической работы \n"
 		<< "\"Типы данных и их внутреннее представление в памяти\" \n \n";
 	
