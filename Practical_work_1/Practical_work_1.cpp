@@ -12,6 +12,7 @@ void floatToBinary(int);
 void doubleToBinary(int, int);
 int readInt();
 void intToBinary(int, short[]);
+bool arrayContains(int, short[]);
 
 int main()
 {
@@ -111,7 +112,7 @@ void additionalSolution() { // Решение дополнительного задания
 
 	int input;
 	while (true) {
-		short notInvertedBits[64];
+		short notInvertedBits[64]; // Массив, в который записываются все биты, которые далее не будут инвертированы.
 		cout << "Введите любое целое число диапазона int... \n>> ";
 		// Считывание числа с проверкой на принадлежность к целым числам.
 		input = readInt();
@@ -119,7 +120,7 @@ void additionalSolution() { // Решение дополнительного задания
 		cout << "Введите номер бита, который не нужно инвертировать (от 1 до 64). \n"
 			<< "Для окончания ввода введите 0... \n>> ";
 		short inputCounter = 1;
-		while (true) {
+		while (inputCounter <= 64) {
 			short input;
 			cin >> input;
 			if (input != 0)
@@ -206,10 +207,10 @@ int readInt() {
 	}
 }
 
-void intToBinary(int input, short notInvertedBits[]) {
+void intToBinary(int value, short notInvertedBits[]) {
 	int mask = 1 << 31; // Маска представляет собой 2^32, то есть 10...00, где нулей 31.
 	for (int i = 1; i <= 32; i++) {
-		if (!arrayContains(i, notInvertedBits[]))
+		if (!arrayContains(i, notInvertedBits))
 			putchar(value & mask ? '0' : '1'); // Бит инвертируется если ранее не было указано, что это не должно происходить.
 		else
 		{
