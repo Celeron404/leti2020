@@ -1,27 +1,75 @@
-﻿// Practical_work_2.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include "pch.h"
+﻿#include "pch.h"
 #include <iostream>
+#include <ctime>
 using namespace std;
-void createArray();
 
+void createAndPrintRandomArray(int[]);
+void bubbleSort(int[]);
+bool choiseNextAction();
+void printArray(int[]);
+
+const int sizeOfArray = 100;
+int mainArray[sizeOfArray];
 int main()
 {
-	createArray();
+	srand((unsigned)time(NULL));
+
+	cout << "This program is solution of task \"Static One-Dimensional Massives\". \n\n";
+	do {
+		createAndPrintRandomArray(mainArray);
+	} while (choiseNextAction());
+
+	do {
+		bubbleSort(mainArray);
+		cout << "Bubble sorted array: \n";
+		printArray(mainArray);
+	} while (choiseNextAction());
+
+	system("pause");
+	return 0;
 }
 
-void createAndPrintArray() {
+void createAndPrintRandomArray(int inputArray[]) {
+	cout << "Initial array:" << endl;
+	
+	for (int i = 0; i < sizeOfArray; i++) {
+		inputArray[i] = -99 + rand() % 199; // В массив пишутся случайные целые числа диапазона -99..99 включительно. При желании данную функцию можно расширить возможностью выбирать граничные значения.
+		cout << inputArray[i] << "\t";
 
+		if ((i+1) % 10 == 0) // Вывод по 10 элементов для удобочитаемости
+			cout << endl;
+	}
+	cout << endl;
 }
 
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
+void bubbleSort(int inputArray[]) {
+	bool swapped;
+	do {
+		swapped = false;
+		for (int i = 0; i < sizeOfArray; i++)
+			if (inputArray[i] > inputArray[i + 1]) { // Соседние элементы массива меняются местами
+				int t = inputArray[i];
+				inputArray[i] = inputArray[i + 1];
+				inputArray[i + 1] = t;
+				swapped = true;
+			}
+	} while (swapped); // Если за последний проход цикла никакие элементы не поменялись местами, цикл прерывается.
+}
 
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
+void printArray(int inputArray[]) {
+	for (int i = 0; i < sizeOfArray; i++) {
+		cout << inputArray[i] << "\t";
+		if ((i + 1) % 10 == 0) // Вывод по 10 элементов для удобочитаемости
+			cout << endl;
+	}
+	cout << endl;
+}
+
+bool choiseNextAction() {
+	cout << "For repeat enter 1, for continue enter 2 or other integer number..." << "\n>> ";
+	int input;
+	cin >> input;
+	if (input == 1)
+		return true;
+	else return false;
+}
