@@ -76,7 +76,7 @@ int main()
 			endTimer = steady_clock::now();
 			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
 
-			cout << "Shaker sorted array: \n";
+			cout << "Comb sorted array: \n";
 			printArray(copiedArray);
 			cout << "Array sorted in " << sortingTime.count() << " second(s). \n";
 			break;
