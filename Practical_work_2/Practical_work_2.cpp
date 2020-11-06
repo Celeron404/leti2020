@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include <iostream>
-#include <ctime>
+#include <ctime> // Нужно для рандома
+#include <chrono> // Нужно для засечения времени
 using namespace std;
+using namespace std::chrono; // Нужно для засечения времени
 
 void createAndPrintRandomArray(int[]);
 void bubbleSort(int[]);
@@ -9,12 +11,12 @@ bool choiseNextAction();
 void printArray(int[]);
 
 const int sizeOfArray = 100;
-int mainArray[sizeOfArray];
 int main()
 {
 	srand((unsigned)time(NULL));
 
 	cout << "This program is solution of task \"Static One-Dimensional Massives\". \n\n";
+	int mainArray[sizeOfArray];
 	do {
 		createAndPrintRandomArray(mainArray);
 	} while (choiseNextAction());
@@ -46,7 +48,7 @@ void bubbleSort(int inputArray[]) {
 	bool swapped;
 	do {
 		swapped = false;
-		for (int i = 0; i < sizeOfArray; i++)
+		for (int i = 0; i < sizeOfArray-1; i++)
 			if (inputArray[i] > inputArray[i + 1]) { // Соседние элементы массива меняются местами
 				int t = inputArray[i];
 				inputArray[i] = inputArray[i + 1];
