@@ -206,9 +206,8 @@ void quickSort(int inputArray[], int  end, int begin) {
 	int middleElement;
 	int f = begin;
 	int l = end;
-	middleElement = inputArray[(f + l) / 2];
-	while (f < l)
-	{
+	middleElement = inputArray[(f + l) / 2]; // Определяется опорный элемент
+	while (f < l) { // Массив сортируется так, что по окончании цикла будет представлять собой две части: элементы меньше либо равные опорному (левая), элементы больше либо равные опорному (правая)
 		while (inputArray[f] < middleElement) f++;
 		while (inputArray[l] > middleElement) l--;
 		if (f <= l)
@@ -220,8 +219,8 @@ void quickSort(int inputArray[], int  end, int begin) {
 			l--;
 		}
 	}
-	if (begin < l) quickSort(inputArray, l, begin);
-	if (f < end) quickSort(inputArray, end, f);
+	if (begin < l) quickSort(inputArray, l, begin); // Где l - правая граница левой части разделённого пополам массива
+	if (f < end) quickSort(inputArray, end, f); // Где f - левая граница правой части разделённого пополам массива
 }
 
 void copyArray(int originalArray[], int resultArray[]) {
