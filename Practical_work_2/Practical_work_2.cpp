@@ -31,11 +31,11 @@ int main()
 	// РЕШЕНИЕ ПЕРВОГО ЗАДАНИЯ
 	int mainArray[sizeOfArray];
 	do {
+		cout << "\n\tTask 1. Initial array:" << endl;
 		createAndPrintRandomArray(mainArray);
 	} while (choiseNextAction());
 
-	// РЕШЕНИЕ ВТОРОГО ЗАДАНИЯ
-	do {
+	do { // РЕШЕНИЕ ВТОРОГО ЗАДАНИЯ
 		cout << "\n\tTask 2. Array sorting." << endl
 			<< "\t\t1) Bubble sort" << endl
 			<< "\t\t2) Shaker sort" << endl
@@ -101,13 +101,12 @@ int main()
 		}
 	} while (choiseNextAction());
 
-	// РЕШЕНИЕ ТРЕТЬЕГО ЗАДАНИЯ
-	do {
-		cout << "\n\tTask 3. Searching min and max elements of sorted and unsorted arrays." << endl;
-		int copiedArray[sizeOfArray];
-		copyArray(mainArray, copiedArray);
-		quickSort(copiedArray, sizeOfArray - 1, 0);
+	int copiedArray[sizeOfArray]; // Создание отсортированного массива, с которым будет производиться работа в дальнейших заданиях
+	copyArray(mainArray, copiedArray);
+	quickSort(copiedArray, sizeOfArray - 1, 0);
 
+	do { // РЕШЕНИЕ ТРЕТЬЕГО ЗАДАНИЯ
+		cout << "\n\tTask 3. Searching min and max elements of sorted and unsorted arrays. \n";
 		startTimer = steady_clock::now(); // Поиск в неотсортированном массиве
 		int max = getMaxArrayElement(mainArray);
 		int min = getMinArrayElement(mainArray);
@@ -115,40 +114,94 @@ int main()
 		
 		cout << "Min element of array: " << min << endl
 			<< "Max element of array: " << max << endl
-			<< "Elements founds in unsorted array for " << stopTime << " second(s)." << endl;
+			<< "Elements founds in unsorted array for " << stopTime << " second(s). \n";
 
 		startTimer = steady_clock::now(); // Поиск в отсортированном массиве
 		max = getMaxArrayElement(copiedArray);
 		min = getMinArrayElement(copiedArray);
 		stopTime = stopTimer(startTimer);
-		cout << "Elements founds in sorted array for " << stopTime << " second(s)." << endl;
-		
-		startTimer = steady_clock::now(); // Вывод минимального и максимального элементов отсортированного массива без поиска
-		max = copiedArray[sizeOfArray-1];
-		min = copiedArray[0];
-		stopTime = stopTimer(startTimer);
-		cout << "Elements founds in sorted array for " << stopTime << " second(s) without traditional searching." << endl;
+		cout << "Elements founds in sorted array for " << stopTime << " second(s). \n";
 	} while (choiseNextAction());
 
-	/*do {
+	do { // РЕШЕНИЕ ЧЕТВЁРТОГО ЗАДАНИЯ
+		cout << "\n\tTask 4. Search average elements from array. \n";
+		int averageElement = int(abs(getMaxArrayElement(copiedArray)) - abs(getMinArrayElement(copiedArray)));
+		cout << "Average element: " << averageElement << endl;
 
+		bool isExists = false; // Проверка на то, существует ли вообще в массиве подходящий средний элемент
+		for (int i = 0; i < sizeOfArray; i++)
+			if (copiedArray[i] == averageElement) {
+				isExists = true;
+				break;
+			}
+		if (isExists) {
+			cout << "Index(es) of average elements: ";
+			int count = 0;
+			for (int i = 0; i < sizeOfArray; i++)
+				if (copiedArray[i] == averageElement) {
+					cout << i << " ";
+					count++;
+				}
+			cout << "\nCount of average elements in array: " << count << endl;
+		}
+		else
+			cout << "Element not found in array. \n";
 	} while (choiseNextAction());
-	*/
+	
+	do { // РЕШЕНИЕ ПЯТОГО ЗАДАНИЯ
+		cout << "\n\tTask 5. The number of smaller elements than the one entered by the user. \n"
+			<< "Enter the integer element...\n>> ";
+		int input;
+		cin >> input;
+		int count = 0;
+		for (int element : copiedArray)
+			if (element < input)
+				count++;
+		cout << "The array has " << count << " element(s) less than you entered. \n";
+	} while (choiseNextAction());
+
+	do { // РЕШЕНИЕ ШЕСТОГО ЗАДАНИЯ
+		cout << "\n\tTask 6. The number of larger elements than the one entered by the user. \n"
+			<< "Enter the integer element...\n>> ";
+		int input;
+		cin >> input;
+		int count = 0;
+		for (int element : copiedArray)
+			if (element > input)
+				count++;
+		cout << "The array has " << count << " element(s) larger than you entered. \n";
+	} while (choiseNextAction());
+
+	do { // РЕШЕНИЕ СЕДЬМОГО ЗАДАНИЯ
+		cout << "\n\tTask 7. The presence of a user-entered element in the array. \n"
+			<< "Enter the integer element...\n>> ";
+		int input;
+		cin >> input;
+		bool isExists = false;
+		for (int element : copiedArray)
+			if (element == input) {
+				isExists = true;
+				break;
+			}
+		if (isExists)
+			cout << "The entered element is in the array. \n";
+		else
+			cout << "The entered element is not in the array. \n";
+	} while (choiseNextAction());
+
 	system("pause");
 	return 0;
 }
 
 void createAndPrintRandomArray(int inputArray[]) {
-	cout << "\n\tTask 1. Initial array:" << endl;
 	
 	for (int i = 0; i < sizeOfArray; i++) {
 		inputArray[i] = -99 + rand() % 199; // В массив пишутся случайные целые числа диапазона -99..99 включительно. При желании данную функцию можно расширить возможностью выбирать граничные значения.
 		cout << inputArray[i] << "\t";
 
 		if ((i+1) % 10 == 0) // Вывод по 10 элементов для удобочитаемости
-			cout << endl << endl;
+			cout << endl;
 	}
-	cout << endl;
 }
 
 void bubbleSort(int inputArray[]) {
@@ -287,7 +340,7 @@ void printArray(int inputArray[]) {
 }
 
 bool choiseNextAction() {
-	cout << "For repeat enter 1, for continue enter 2 or other integer number..." << "\n>> ";
+	cout << "\nFor repeat enter 1, for continue enter 2 or other integer number..." << "\n>> ";
 	int input;
 	cin >> input;
 	if (input == 1)
