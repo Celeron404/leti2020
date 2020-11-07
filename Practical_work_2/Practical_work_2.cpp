@@ -11,18 +11,19 @@ void shakerSort(int[]);
 void combSort(int[]);
 void insertSort(int[]);
 void quickSort(int[], int, int);
+int getMinArrayElement(int[]);
+int getMaxArrayElement(int[]);
 void copyArray(int[], int[]);
 void printArray(int[]);
 bool choiseNextAction();
+float stopTimer(time_point<steady_clock>);
 
 const int sizeOfArray = 100;
 int main()
 {
 	srand((unsigned)time(NULL));
-	using fseconds = duration<float>; // Определение кастомного интервала времени для отображение дробных секунд в таймере.
-	time_point<steady_clock> startTimer = steady_clock::now(); // Определение и инициализация переменных таймера.
-	time_point<steady_clock> endTimer = steady_clock::now();
-	fseconds sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+	time_point<steady_clock> startTimer = steady_clock::now();
+	float stopTime = stopTimer(startTimer);
 
 	int count = 0;
 	cout << "This program is solution of task \"Static One-Dimensional Massives\". \n\n";
@@ -35,12 +36,12 @@ int main()
 
 	// РЕШЕНИЕ ВТОРОГО ЗАДАНИЯ
 	do {
-		cout << "\nTask 2. Array sorting." << endl
-			<< "\t1) Bubble sort" << endl
-			<< "\t2) Shaker sort" << endl
-			<< "\t3) Comb sort" << endl
-			<< "\t4) Insert sort" << endl
-			<< "\t5) Quick sort" << endl
+		cout << "\n\tTask 2. Array sorting." << endl
+			<< "\t\t1) Bubble sort" << endl
+			<< "\t\t2) Shaker sort" << endl
+			<< "\t\t3) Comb sort" << endl
+			<< "\t\t4) Insert sort" << endl
+			<< "\t\t5) Quick sort" << endl
 			<< "Enter the number of sorting... \n>> ";
 		int input;
 		cin >> input;
@@ -51,62 +52,94 @@ int main()
 		case 1: // РЕШЕНИЕ 2.1 ЗАДАНИЯ (bubble sort)
 			startTimer = steady_clock::now(); // Старт отсчёта времени
 			bubbleSort(copiedArray);
-			endTimer = steady_clock::now(); // Окончание отсчёта времени
-			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTime = stopTimer(startTimer);
+			//endTimer = steady_clock::now(); // Окончание отсчёта времени
+			//sortingTime = duration_cast<fseconds>(endTimer - startTimer);
 
 			cout << "\nBubble sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
 			break;
 		case 2: // РЕШЕНИЕ 2.2 ЗАДАНИЯ (shaker sort)
 			startTimer = steady_clock::now();
 			shakerSort(copiedArray);
-			endTimer = steady_clock::now();
-			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTime = stopTimer(startTimer);
+			//endTimer = steady_clock::now();
+			//sortingTime = duration_cast<fseconds>(endTimer - startTimer);
 
 			cout << "\nShaker sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
 			break;
 		case 3: // РЕШЕНИЕ 2.3 ЗАДАНИЯ (comb sort)
 			startTimer = steady_clock::now();
 			combSort(copiedArray);
-			endTimer = steady_clock::now();
-			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTime = stopTimer(startTimer);
 
 			cout << "\nComb sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
 			break;
 		case 4: // РЕШЕНИЕ 2.4 ЗАДАНИЯ (insert sort)
 			startTimer = steady_clock::now();
 			insertSort(copiedArray);
-			endTimer = steady_clock::now();
-			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTime = stopTimer(startTimer);
 
 			cout << "\nInsert sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
 			break;
 		case 5: // РЕШЕНИЕ 2.5 ЗАДАНИЯ (quick sort)
 			startTimer = steady_clock::now();
 			quickSort(copiedArray, sizeOfArray - 1, 0);
-			endTimer = steady_clock::now();
-			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTime = stopTimer(startTimer);
 
 			cout << "\nQuick sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
 			break;
 		}
 	} while (choiseNextAction());
 
+	// РЕШЕНИЕ ТРЕТЬЕГО ЗАДАНИЯ
+	do {
+		cout << "\n\tTask 3. Searching min and max elements of sorted and unsorted arrays." << endl;
+		int copiedArray[sizeOfArray];
+		copyArray(mainArray, copiedArray);
+		quickSort(copiedArray, sizeOfArray - 1, 0);
+
+		startTimer = steady_clock::now(); // Поиск в неотсортированном массиве
+		int max = getMaxArrayElement(mainArray);
+		int min = getMinArrayElement(mainArray);
+		stopTime = stopTimer(startTimer);
+		
+		cout << "Min element of array: " << min << endl
+			<< "Max element of array: " << max << endl
+			<< "Elements founds in unsorted array for " << stopTime << " second(s)." << endl;
+
+		startTimer = steady_clock::now(); // Поиск в отсортированном массиве
+		max = getMaxArrayElement(copiedArray);
+		min = getMinArrayElement(copiedArray);
+		stopTime = stopTimer(startTimer);
+		cout << "Elements founds in sorted array for " << stopTime << " second(s)." << endl;
+		
+		startTimer = steady_clock::now(); // Вывод минимального и максимального элементов отсортированного массива без поиска
+		max = copiedArray[sizeOfArray-1];
+		min = copiedArray[0];
+		stopTime = stopTimer(startTimer);
+		cout << "Elements founds in sorted array for " << stopTime << " second(s) without traditional searching." << endl;
+	} while (choiseNextAction());
+
+	/*do {
+
+	} while (choiseNextAction());
+	*/
 	system("pause");
 	return 0;
 }
 
 void createAndPrintRandomArray(int inputArray[]) {
-	cout << "Task 1. Initial array:" << endl;
+	cout << "\n\tTask 1. Initial array:" << endl;
 	
 	for (int i = 0; i < sizeOfArray; i++) {
 		inputArray[i] = -99 + rand() % 199; // В массив пишутся случайные целые числа диапазона -99..99 включительно. При желании данную функцию можно расширить возможностью выбирать граничные значения.
@@ -223,6 +256,22 @@ void quickSort(int inputArray[], int  end, int begin) {
 	if (f < end) quickSort(inputArray, end, f); // Где f - левая граница правой части разделённого пополам массива
 }
 
+int getMinArrayElement(int inputArray[]) {
+	int minElement = INT_MAX;
+	for (int i = 0; i < sizeOfArray; i++)
+		if (inputArray[i] < minElement)
+			minElement = inputArray[i];
+	return minElement;
+}
+
+int getMaxArrayElement(int inputArray[]) {
+	int maxElement = INT_MIN;
+	for (int i = 0; i < sizeOfArray; i++)
+		if (inputArray[i] > maxElement)
+			maxElement = inputArray[i];
+	return maxElement;
+}
+
 void copyArray(int originalArray[], int resultArray[]) {
 	for (int i = 0; i < sizeOfArray; i++)
 		resultArray[i] = originalArray[i];
@@ -244,4 +293,11 @@ bool choiseNextAction() {
 	if (input == 1)
 		return true;
 	else return false;
+}
+
+float stopTimer(time_point<steady_clock> startTimer) {
+	using fseconds = duration<float>; // Определение кастомного интервала времени для отображение дробных секунд в таймере.
+	time_point<steady_clock> endTimer = steady_clock::now(); // Остановка времени
+	fseconds sortingTime = duration_cast<fseconds>(endTimer - startTimer); // Вычисление разницы между финальным и стартовым временем
+	return sortingTime.count();
 }
