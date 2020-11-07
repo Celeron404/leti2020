@@ -9,6 +9,8 @@ void createAndPrintRandomArray(int[]);
 void bubbleSort(int[]);
 void shakerSort(int[]);
 void combSort(int[]);
+void insertSort(int[]);
+void quickSort(int[], int, int);
 void copyArray(int[], int[]);
 void printArray(int[]);
 bool choiseNextAction();
@@ -33,7 +35,7 @@ int main()
 
 	// РЕШЕНИЕ ВТОРОГО ЗАДАНИЯ
 	do {
-		cout << "Task 2. Array sorting." << endl
+		cout << "\nTask 2. Array sorting." << endl
 			<< "\t1) Bubble sort" << endl
 			<< "\t2) Shaker sort" << endl
 			<< "\t3) Comb sort" << endl
@@ -43,44 +45,60 @@ int main()
 		int input;
 		cin >> input;
 		int copiedArray[sizeOfArray];
+		copyArray(mainArray, copiedArray); // Копирование массива в другой массив для возможности в дальнейшем на том же массиве проверить другие типы сортировки.
+
 		switch (input) {
 		case 1: // РЕШЕНИЕ 2.1 ЗАДАНИЯ (bubble sort)
-			copyArray(mainArray, copiedArray); // Копирование массива в другой массив для возможности в дальнейшем на том же массиве проверить другие типы сортировки.
-
 			startTimer = steady_clock::now(); // Старт отсчёта времени
 			bubbleSort(copiedArray);
 			endTimer = steady_clock::now(); // Окончание отсчёта времени
 			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
 
-			cout << "Bubble sorted array: \n";
+			cout << "\nBubble sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
 			break;
 		case 2: // РЕШЕНИЕ 2.2 ЗАДАНИЯ (shaker sort)
-			copyArray(mainArray, copiedArray);
-
 			startTimer = steady_clock::now();
 			shakerSort(copiedArray);
 			endTimer = steady_clock::now();
 			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
 
-			cout << "Shaker sorted array: \n";
+			cout << "\nShaker sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
 			break;
 		case 3: // РЕШЕНИЕ 2.3 ЗАДАНИЯ (comb sort)
-			copyArray(mainArray, copiedArray);
-
 			startTimer = steady_clock::now();
 			combSort(copiedArray);
 			endTimer = steady_clock::now();
 			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
 
-			cout << "Comb sorted array: \n";
+			cout << "\nComb sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << sortingTime.count() << " second(s). \n";
+			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
 			break;
-		} 
+		case 4: // РЕШЕНИЕ 2.4 ЗАДАНИЯ (insert sort)
+			startTimer = steady_clock::now();
+			insertSort(copiedArray);
+			endTimer = steady_clock::now();
+			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+
+			cout << "\nInsert sorted array: \n";
+			printArray(copiedArray);
+			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			break;
+		case 5: // РЕШЕНИЕ 2.5 ЗАДАНИЯ (quick sort)
+			startTimer = steady_clock::now();
+			quickSort(copiedArray, sizeOfArray - 1, 0);
+			endTimer = steady_clock::now();
+			sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+
+			cout << "\nQuick sorted array: \n";
+			printArray(copiedArray);
+			cout << "Array sorted in " << fixed << sortingTime.count() << " second(s). \n";
+			break;
+		}
 	} while (choiseNextAction());
 
 	system("pause");
@@ -167,6 +185,43 @@ void combSort(int inputArray[]) {
 		}
 	} while (swapped == true); // Если за последний проход цикла никакие элементы не поменялись местами, цикл прерывается.
 
+}
+
+void insertSort(int inputArray[]) {
+	int extractedElement, currentPosition;
+	for (int i = 1; i < sizeOfArray; i++)
+	{ 
+		extractedElement = inputArray[i];
+		currentPosition = i;
+		while ((currentPosition >= 1) && (extractedElement < inputArray[currentPosition - 1]))
+		{
+			inputArray[currentPosition] = inputArray[currentPosition - 1];
+			currentPosition--;
+		}
+		inputArray[currentPosition] = extractedElement;
+	}
+}
+
+void quickSort(int inputArray[], int  end, int begin) {
+	int middleElement;
+	int f = begin;
+	int l = end;
+	middleElement = inputArray[(f + l) / 2];
+	while (f < l)
+	{
+		while (inputArray[f] < middleElement) f++;
+		while (inputArray[l] > middleElement) l--;
+		if (f <= l)
+		{
+			int swap = inputArray[f];
+			inputArray[f] = inputArray[l];
+			inputArray[l] = swap;
+			f++;
+			l--;
+		}
+	}
+	if (begin < l) quickSort(inputArray, l, begin);
+	if (f < end) quickSort(inputArray, end, f);
 }
 
 void copyArray(int originalArray[], int resultArray[]) {
