@@ -13,17 +13,20 @@ void insertSort(int[]);
 void quickSort(int[], int, int);
 int getMinArrayElement(int[]);
 int getMaxArrayElement(int[]);
+int binarySearch(int[], int, int, int);
 void copyArray(int[], int[]);
 void printArray(int[]);
 bool choiseNextAction();
-float stopTimer(time_point<steady_clock>);
+float stopSecondsTimer(time_point<steady_clock>);
+long long stopNanoSecondsTimer(time_point<steady_clock>);
 
 const int sizeOfArray = 100;
 int main()
 {
 	srand((unsigned)time(NULL));
 	time_point<steady_clock> startTimer = steady_clock::now();
-	float stopTime = stopTimer(startTimer);
+	float stopTimeInSeconds = stopSecondsTimer(startTimer);
+	long long stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
 
 	int count = 0;
 	cout << "This program is solution of task \"Static One-Dimensional Massives\". \n\n";
@@ -52,51 +55,47 @@ int main()
 		case 1: // РЕШЕНИЕ 2.1 ЗАДАНИЯ (bubble sort)
 			startTimer = steady_clock::now(); // Старт отсчёта времени
 			bubbleSort(copiedArray);
-			stopTime = stopTimer(startTimer);
-			//endTimer = steady_clock::now(); // Окончание отсчёта времени
-			//sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTimeInSeconds = stopSecondsTimer(startTimer);
 
 			cout << "\nBubble sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
 			break;
 		case 2: // РЕШЕНИЕ 2.2 ЗАДАНИЯ (shaker sort)
 			startTimer = steady_clock::now();
 			shakerSort(copiedArray);
-			stopTime = stopTimer(startTimer);
-			//endTimer = steady_clock::now();
-			//sortingTime = duration_cast<fseconds>(endTimer - startTimer);
+			stopTimeInSeconds = stopSecondsTimer(startTimer);
 
 			cout << "\nShaker sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
 			break;
 		case 3: // РЕШЕНИЕ 2.3 ЗАДАНИЯ (comb sort)
 			startTimer = steady_clock::now();
 			combSort(copiedArray);
-			stopTime = stopTimer(startTimer);
+			stopTimeInSeconds = stopSecondsTimer(startTimer);
 
 			cout << "\nComb sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
 			break;
 		case 4: // РЕШЕНИЕ 2.4 ЗАДАНИЯ (insert sort)
 			startTimer = steady_clock::now();
 			insertSort(copiedArray);
-			stopTime = stopTimer(startTimer);
+			stopTimeInSeconds = stopSecondsTimer(startTimer);
 
 			cout << "\nInsert sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
 			break;
 		case 5: // РЕШЕНИЕ 2.5 ЗАДАНИЯ (quick sort)
 			startTimer = steady_clock::now();
 			quickSort(copiedArray, sizeOfArray - 1, 0);
-			stopTime = stopTimer(startTimer);
+			stopTimeInSeconds = stopSecondsTimer(startTimer);
 
 			cout << "\nQuick sorted array: \n";
 			printArray(copiedArray);
-			cout << "Array sorted in " << fixed << stopTime << " second(s). \n";
+			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
 			break;
 		}
 	} while (choiseNextAction());
@@ -110,17 +109,18 @@ int main()
 		startTimer = steady_clock::now(); // Поиск в неотсортированном массиве
 		int max = getMaxArrayElement(mainArray);
 		int min = getMinArrayElement(mainArray);
-		stopTime = stopTimer(startTimer);
+		stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
 		
 		cout << "Min element of array: " << min << endl
 			<< "Max element of array: " << max << endl
-			<< "Elements founds in unsorted array for " << stopTime << " second(s). \n";
+			<< "Elements founds in unsorted array for " << stopTimeInNanoSeconds << " nanoseconds. \n";
 
 		startTimer = steady_clock::now(); // Поиск в отсортированном массиве
 		max = getMaxArrayElement(copiedArray);
 		min = getMinArrayElement(copiedArray);
-		stopTime = stopTimer(startTimer);
-		cout << "Elements founds in sorted array for " << stopTime << " second(s). \n";
+		stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
+		//cout << "Min: " << min << "\tMax: " << max << endl; // Отладка
+		cout << "Elements founds in sorted array for " << stopTimeInNanoSeconds << " nanoseconds. \n";
 	} while (choiseNextAction());
 
 	do { // РЕШЕНИЕ ЧЕТВЁРТОГО ЗАДАНИЯ
@@ -173,22 +173,57 @@ int main()
 	} while (choiseNextAction());
 
 	do { // РЕШЕНИЕ СЕДЬМОГО ЗАДАНИЯ
-		cout << "\n\tTask 7. The presence of a user-entered element in the array. \n"
+		cout << "\n\tTask 7. The searching of a user-entered element in the array (traditional and binary search). \n"
 			<< "Enter the integer element...\n>> ";
 		int input;
 		cin >> input;
+
+		startTimer = steady_clock::now();
 		bool isExists = false;
-		for (int element : copiedArray)
+		for (int element : copiedArray) // Поиск обычным перебором
 			if (element == input) {
 				isExists = true;
 				break;
 			}
+		stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
 		if (isExists)
 			cout << "The entered element is in the array. \n";
 		else
 			cout << "The entered element is not in the array. \n";
+		cout << "The search has been completed for " << stopTimeInNanoSeconds << " nanoseconds. \n";
+
+		startTimer = steady_clock::now();
+		int searchedElement = binarySearch(copiedArray, input, 0, sizeOfArray - 1);
+		stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
+		/* Отладка
+		if (searchedElement != -1)
+			cout << "Searched element (binary search): " << searchedElement << endl;
+		else cout << "Element not searched. \n"; */
+		cout << "The binary search has been completed for " << stopTimeInNanoSeconds << " nanoseconds. \n";
 	} while (choiseNextAction());
 
+	do { // РЕШЕНИЕ ВОСЬМОГО ЗАДАНИЯ
+		cout << "\n\tTask 7. Switching array elements. \n"
+			<< "Enter the first and second indexes of array elements...\n>> ";
+		int input1, input2;
+		cin >> input1 >> input2;
+		startTimer = steady_clock::now();
+		//if (((input1 && input2) >= 0) && ((input1 && input2) < sizeOfArray)) { // Ошибка компилятора о небезопасном условии. Разобраться, почему.
+		if ((input1 >= 0) && (input2 >= 0) && (input1 < sizeOfArray) && (input2 < sizeOfArray)) {
+			int t = copiedArray[input1];
+			copiedArray[input1] = copiedArray[input2];
+			copiedArray[input2] = t;
+		}
+		else {
+			cout << "Wrong input! \n";
+			continue;
+		}
+		stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
+		printArray(copiedArray); // Отладка
+		cout << "The switching has been completed for " << stopTimeInNanoSeconds << " nanoseconds. \n";
+	} while (choiseNextAction());
+
+	cout << "Closing the program... \n";
 	system("pause");
 	return 0;
 }
@@ -242,7 +277,7 @@ void shakerSort(int inputArray[]) {
 
 void combSort(int inputArray[]) {
 	int swap;
-	float k = 1.247, sortingRange = sizeOfArray - 1;
+	float k = 1.247F, sortingRange = sizeOfArray - 1;
 
 	while (sortingRange >= 1)
 	{
@@ -325,6 +360,22 @@ int getMaxArrayElement(int inputArray[]) {
 	return maxElement;
 }
 
+int binarySearch(int inputArray[], int inputElement, int lowPos, int highPos) {
+	while (lowPos <= highPos) {
+		int mid = lowPos + (highPos - lowPos) / 2;
+
+		if (inputArray[mid] == inputElement)
+			return mid;
+
+		if (inputArray[mid] < inputElement)
+			lowPos = mid + 1;
+
+		else
+			highPos = mid - 1;
+	}
+	return -1;
+}
+
 void copyArray(int originalArray[], int resultArray[]) {
 	for (int i = 0; i < sizeOfArray; i++)
 		resultArray[i] = originalArray[i];
@@ -348,9 +399,15 @@ bool choiseNextAction() {
 	else return false;
 }
 
-float stopTimer(time_point<steady_clock> startTimer) {
+float stopSecondsTimer(time_point<steady_clock> startTimer) {
 	using fseconds = duration<float>; // Определение кастомного интервала времени для отображение дробных секунд в таймере.
 	time_point<steady_clock> endTimer = steady_clock::now(); // Остановка времени
 	fseconds sortingTime = duration_cast<fseconds>(endTimer - startTimer); // Вычисление разницы между финальным и стартовым временем
+	return sortingTime.count();
+}
+
+long long stopNanoSecondsTimer(time_point<steady_clock> startTimer) {
+	time_point<steady_clock> endTimer = steady_clock::now();
+	nanoseconds sortingTime = duration_cast<nanoseconds>(endTimer - startTimer);
 	return sortingTime.count();
 }
