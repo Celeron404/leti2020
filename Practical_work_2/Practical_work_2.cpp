@@ -11,6 +11,9 @@ void shakerSort(int[]);
 void combSort(int[]);
 void insertSort(int[]);
 void quickSort(int[], int, int);
+void Merge(int[], int, int, int, int[]);
+void InternalMergeSort(int[], int, int, int[]);
+void MergeSort(int[], int, int);
 int getMinArrayElement(int[]);
 int getMaxArrayElement(int[]);
 int binarySearch(int[], int, int, int);
@@ -45,6 +48,7 @@ int main()
 			<< "\t\t3) Comb sort" << endl
 			<< "\t\t4) Insert sort" << endl
 			<< "\t\t5) Quick sort" << endl
+			<< "\t\t6) Merge sort" << endl
 			<< "Enter the number of sorting... \n>> ";
 		int input;
 		cin >> input;
@@ -94,6 +98,15 @@ int main()
 			stopTimeInSeconds = stopSecondsTimer(startTimer);
 
 			cout << "\nQuick sorted array: \n";
+			printArray(copiedArray);
+			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
+			break;
+		case 6: // РЕШЕНИЕ ДОПОЛНИТЕЛЬНОГО ЗАДАНИЯ (merge sort)
+			startTimer = steady_clock::now();
+			MergeSort(copiedArray, 0, sizeOfArray - 1);
+			stopTimeInSeconds = stopSecondsTimer(startTimer);
+
+			cout << "\nMerge sorted array: \n";
 			printArray(copiedArray);
 			cout << "Array sorted in " << fixed << stopTimeInSeconds << " second(s). \n";
 			break;
@@ -342,6 +355,49 @@ void quickSort(int inputArray[], int  end, int begin) {
 	}
 	if (begin < l) quickSort(inputArray, l, begin); // Где l - правая граница левой части разделённого пополам массива
 	if (f < end) quickSort(inputArray, end, f); // Где f - левая граница правой части разделённого пополам массива
+}
+
+void Merge(int array[], int first, int middle, int last, int temp[])
+{
+	int idx = first;
+	int begin1 = first, end1 = middle;
+	int begin2 = middle + 1, end2 = last;
+
+	for (; begin1 <= end1 && begin2 <= end2; )
+	{
+		if (array[begin1] < array[begin2])
+			temp[idx++] = array[begin1++];
+		else
+			temp[idx++] = array[begin2++];
+	}
+
+	for (; begin1 <= end1; )
+		temp[idx++] = array[begin1++];
+
+	for (; begin2 <= end2; )
+		temp[idx++] = array[begin2++];
+
+
+	for (idx = first; idx <= last; idx++)
+		array[idx] = temp[idx];
+}
+
+void InternalMergeSort(int array[], int first, int last, int buffer[])
+{
+	if (first < last)
+	{
+		int m = (first + last) / 2;
+		InternalMergeSort(array, first, m, buffer);
+		InternalMergeSort(array, m + 1, last, buffer);
+		Merge(array, first, m, last, buffer);
+	}
+}
+
+void MergeSort(int array[], int first, int last)
+{
+	int *buffer = new int[sizeOfArray];
+	InternalMergeSort(array, 0, sizeOfArray - 1, buffer);
+	delete[] buffer;
 }
 
 int getMinArrayElement(int inputArray[]) {
