@@ -23,7 +23,7 @@ int main()
 	wprintf(L"%S", message);
 	*/
 
-	cout << "Данная программа является решением первой практической работы \n"
+	cout << "This program is solution of task \"Types of data and  \n"
 		<< "\"Типы данных и их внутреннее представление в памяти\" \n \n";
 	
 	solution1();
