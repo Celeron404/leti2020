@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <ctime> // Нужно для рандома
 #include <chrono> // Нужно для засечения времени
+#include <Windows.h>
 using namespace std::chrono; // Нужно для засечения времени
 using namespace std;
 
@@ -31,7 +32,7 @@ bool choiseNextAction();
 float stopSecondsTimer(time_point<steady_clock>);
 long long stopNanoSecondsTimer(time_point<steady_clock>);
 
-void createAndPrintRandomMaxtrix(int[], int);
+void animatedArrayOutput(int[], int);
 
 int main()
 {
@@ -623,16 +624,16 @@ long long stopNanoSecondsTimer(time_point<steady_clock> startTimer) {
 }
 
 void practicalWork3() {
-	cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n";
-
-	cout << "Task 1. Visualisation of filling the matrix. \n";
-	int input;
+	int order;
 	bool inputIsCorrected = true;
 	do {
 		do {
-			cout << "Enter the order of matrix: 6, 8 or 10... \n>> ";
-			cin >> input;
-			if (input == 6 || input == 8 || input == 10)
+			system("CLS");
+			cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n"
+				<< "Task 1. Visualisation of filling the matrix. \n"
+				<< "Enter the order of matrix: 6, 8 or 10... \n>> ";
+			cin >> order;
+			if (order == 6 || order == 8 || order == 10)
 				inputIsCorrected = false;
 			else {
 				cout << "Wrong input! \n";
@@ -640,34 +641,80 @@ void practicalWork3() {
 		} while (inputIsCorrected);
 
 		srand((unsigned)time(NULL));
-		switch (input) {
-		case 6:
-			int mainArray[6][6];
-			createAndPrintRandomMaxtrix((int *)mainArray, 6);
-			break;
-		case 8:
-			int mainArray2[8][8];
-			createAndPrintRandomMaxtrix((int *)mainArray2, 8);
-			break;
-		case 10:
-			int mainArray3[10][10];
-			createAndPrintRandomMaxtrix((int *)mainArray3, 10);
-			break;
+		int *ptrarray = new int[order*order]; // Объявление динамического одномерного массива размерности двумерного
+
+		for (int i = 0; i < order; i++)
+			for (int j = 0; j < order; j++) // В массив пишутся случайные числа от 1 до N*N, где N - порядок матрицы. 
+				*(ptrarray + i * order + j) = 1 + rand() % (order * order);
+		cout << endl;
+
+	
+		for (int i = 0; i < order; i++) {
+			for (int j = 0; j < order; j++) {
+				cout << *(ptrarray + i * order + j) << " ";
+			}
+			cout << endl;
 		}
+		
+		animatedArrayOutput(ptrarray, order);
 	} while (choiseNextAction());
 }
 
-void createAndPrintRandomMaxtrix(int inputArray[], int arrayOrder) {
-	for (int i = 0; i < arrayOrder; i++)
-		for (int j = 0; j < arrayOrder; j++) // В массив пишутся случайные числа от 1 до N*N, где N - порядок матрицы. 
-				*(inputArray + i * arrayOrder + j) = 1 + rand() % (arrayOrder * arrayOrder);  
-	cout << endl;
-	//t
-	for (int i = 0; i < arrayOrder; i++) {
-		for (int j = 0; j < arrayOrder; j++) {
-			cout << *(inputArray + i * arrayOrder + j) << " ";
+void animatedArrayOutput(int inputArray[], int order) {
+	COORD position;
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO bi;
+	short rotate = 0;
+	int length = order;
+	int i = 0;
+	do {
+		for (int j = 0; j < length; j++) {
+			cout << inputArray[i];
+			i++;
+			switch (rotate) {
+			case 0:
+				cout << ' ';
+				break;
+			case 1:
+				GetConsoleScreenBufferInfo(hConsole, &bi);
+				position.Y = bi.dwCursorPosition.Y + 1;
+				SetConsoleCursorPosition(hConsole, position);
+				break;
+			case 2:
+				cout << '\b';
+				break;
+			case 3:
+				GetConsoleScreenBufferInfo(hConsole, &bi);
+				position.Y = bi.dwCursorPosition.Y - 1;
+				SetConsoleCursorPosition(hConsole, position);
+				break;
+			}
 		}
-		cout << endl;
-	}
-	cout << endl;
+		length--;
+		if (rotate < 3)
+			rotate++;
+		else rotate = 0;
+		for (int j = 0; j < length; j++) {
+			cout << inputArray[i];
+			i++;
+			switch (rotate) {
+			case 0:
+				cout << ' ';
+				break;
+			case 1:
+				GetConsoleScreenBufferInfo(hConsole, &bi);
+				position.Y = bi.dwCursorPosition.Y + 1;
+				SetConsoleCursorPosition(hConsole, position);
+				break;
+			case 2:
+				cout << '\b';
+				break;
+			case 3:
+				GetConsoleScreenBufferInfo(hConsole, &bi);
+				position.Y = bi.dwCursorPosition.Y - 1;
+				SetConsoleCursorPosition(hConsole, position);
+				break;
+			}
+		}
+	} while (i <= order * order);
 }
