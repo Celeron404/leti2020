@@ -33,8 +33,8 @@ bool choiseNextAction();
 float stopSecondsTimer(time_point<steady_clock>);
 long long stopNanoSecondsTimer(time_point<steady_clock>);
 
-void snakeAnimation(int[], int, short cellSize = 4, short delay = 150);
-void spiralAnimation(int[], int, short cellSize = 4, short delay = 150);
+void snakeAnimation(int[], int, short cellSize = 4, short delay = 100);
+void spiralAnimation(int[], int, short cellSize = 4, short delay = 100);
 
 int main()
 {
@@ -631,37 +631,28 @@ long long stopNanoSecondsTimer(time_point<steady_clock> startTimer) {
 
 void practicalWork3() {
 	int order;
+	system("CLS");
+	cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n"
+		<< "Task 1. Visualisation of filling the matrix. \n"
+		<< "Enter the order of matrix... \n>> ";
+	bool inputIsCorrected = true;
 	do {
-		system("CLS");
-		cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n"
-			<< "Task 1. Visualisation of filling the matrix. \n"
-			<< "Enter the order of matrix... \n>> ";
-		bool inputIsCorrected = true;
-		do {
-			cin >> order;
-			if (order > 0)
-				inputIsCorrected = false;
-			else {
-				cout << "Wrong input! Try again...\n>> ";
-			}
-		} while (inputIsCorrected);
-
-		srand((unsigned)time(NULL));
-		int *ptrarray = new int[order*order]; // Объявление динамического одномерного массива размерности двумерного
-
-		for (int i = 0; i < order; i++)
-			for (int j = 0; j < order; j++) // В массив пишутся случайные числа от 1 до N*N, где N - порядок матрицы. 
-				*(ptrarray + i * order + j) = 1 + rand() % (order * order);
-		cout << endl;
-
-		cout << "Debug output: \n";
-		for (int i = 0; i < order; i++) {
-			for (int j = 0; j < order; j++) {
-				cout << *(ptrarray + i * order + j) << " ";
-			}
-			cout << endl;
+		cin >> order;
+		if (order > 0)
+			inputIsCorrected = false;
+		else {
+			cout << "Wrong input! Try again...\n>> ";
 		}
-		
+	} while (inputIsCorrected);
+
+	srand((unsigned)time(NULL));
+	int *ptrarray = new int[order*order]; // Объявление динамического одномерного массива размерности двумерного
+
+	for (int i = 0; i < order; i++)
+		for (int j = 0; j < order; j++) // В массив пишутся случайные числа от 1 до N*N, где N - порядок матрицы. 
+			*(ptrarray + i * order + j) = 1 + rand() % (order * order);
+	cout << endl;
+	do {
 		inputIsCorrected = true;
 		cout << "Enter the type of animation:"
 			<< "\n\t1) Snake animation"
@@ -726,7 +717,7 @@ void snakeAnimation(int arr[], int order, short cellSize, short delay) {
 		else break;
 	}
 	if (order % 2 == 0)
-		for (int i = 0; i < order; i++)
+		for (int i = 0; i < order + 1; i++)
 			cout << endl;
 }
 
@@ -787,6 +778,6 @@ void spiralAnimation(int arr[], int order, short cellSize, short delay) {
 		length--;
 	}
 
-	for (int i = 0; i <= (order / 2 + 1); i++)
+	for (int i = 0; i <= (order / 2); i++)
 		cout << endl;
 }
