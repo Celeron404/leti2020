@@ -1,7 +1,8 @@
 ﻿#include <iostream>
 #include <ctime> // Нужно для рандома
 #include <chrono> // Нужно для засечения времени
-#include <Windows.h>
+#include <Windows.h> // Нужно для получения координат консоли и их изменения
+#include <iomanip> // нужно для std::setw
 using namespace std::chrono; // Нужно для засечения времени
 using namespace std;
 
@@ -32,16 +33,17 @@ bool choiseNextAction();
 float stopSecondsTimer(time_point<steady_clock>);
 long long stopNanoSecondsTimer(time_point<steady_clock>);
 
-void animatedArrayOutput(int[], int);
+void snakeAnimation(int[], int, short cellSize = 4, short delay = 150);
+void spiralAnimation(int[], int, short cellSize = 4, short delay = 150);
 
 int main()
 {
 	while (true) {
 		system("CLS");
 		cout << "Practical works: \n"
-			<< "1) Data types and their internal representation in computer memory \n"
-			<< "2) Static One-Dimensional Massives \n"
-			<< "3) Arythmetics of pointers. Matrixes \n\n"
+			<< "\t1) Data types and their internal representation in computer memory \n"
+			<< "\t2) Static One-Dimensional Massives \n"
+			<< "\t3) Arythmetics of pointers. Matrixes \n\n"
 			<< "Enter the number of practical work or enter 0 for close the program... \n>> ";
 		int input;
 		cin >> input;
@@ -386,7 +388,7 @@ void practicalWork2() {
 			copiedArray[input2] = t;
 		}
 		else {
-			cout << "Wrong input! \n";
+			cout << "Wrong input! Try again...\n\n>> ";
 			continue;
 		}
 		stopTimeInNanoSeconds = stopNanoSecondsTimer(startTimer);
@@ -601,13 +603,17 @@ void printArray(int inputArray[]) {
 }
 
 bool choiseNextAction() {
-	cout << "\nFor repeat enter 1, for continue enter 2 or other integer number..." << "\n>> ";
-	int input;
-	cin >> input;
-	if (input == 1) 
-		return true;
-	else
-		return false;
+	cout << "\nDo you want to repeat (y/n)?" << "\n>> ";
+	char input;
+	while (true) {
+		cin >> input;
+		if (input == 'y' || input == 'Y')
+			return true;
+		else if (input == 'n' || input == 'N')
+			return false;
+		else
+			cout << "Wrong input! Try again...\n>> ";
+	}
 }
 
 float stopSecondsTimer(time_point<steady_clock> startTimer) {
@@ -625,18 +631,18 @@ long long stopNanoSecondsTimer(time_point<steady_clock> startTimer) {
 
 void practicalWork3() {
 	int order;
-	bool inputIsCorrected = true;
 	do {
+		system("CLS");
+		cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n"
+			<< "Task 1. Visualisation of filling the matrix. \n"
+			<< "Enter the order of matrix... \n>> ";
+		bool inputIsCorrected = true;
 		do {
-			system("CLS");
-			cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n"
-				<< "Task 1. Visualisation of filling the matrix. \n"
-				<< "Enter the order of matrix: 6, 8 or 10... \n>> ";
 			cin >> order;
-			if (order == 6 || order == 8 || order == 10)
+			if (order > 0)
 				inputIsCorrected = false;
 			else {
-				cout << "Wrong input! \n";
+				cout << "Wrong input! Try again...\n>> ";
 			}
 		} while (inputIsCorrected);
 
@@ -648,7 +654,7 @@ void practicalWork3() {
 				*(ptrarray + i * order + j) = 1 + rand() % (order * order);
 		cout << endl;
 
-	
+		cout << "Debug output: \n";
 		for (int i = 0; i < order; i++) {
 			for (int j = 0; j < order; j++) {
 				cout << *(ptrarray + i * order + j) << " ";
@@ -656,65 +662,131 @@ void practicalWork3() {
 			cout << endl;
 		}
 		
-		animatedArrayOutput(ptrarray, order);
+		inputIsCorrected = true;
+		cout << "Enter the type of animation:"
+			<< "\n\t1) Snake animation"
+			<< "\n\t2) Spiral animation\n>> ";
+		do {
+			int input;
+			cin >> input;
+			switch (input) {
+			case 1:
+				snakeAnimation(ptrarray, order);
+				inputIsCorrected = false;
+				break;
+			case 2:
+				spiralAnimation(ptrarray, order);
+				inputIsCorrected = false;
+				break;
+			default:
+				cout << "Wrong input! Try again...\n\n>> ";
+			}
+		} while (inputIsCorrected);
+
 	} while (choiseNextAction());
 }
 
-void animatedArrayOutput(int inputArray[], int order) {
-	COORD position;
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+void snakeAnimation(int arr[], int order, short cellSize, short delay) {
+	/* Функция принимает на вход:
+	1) Указатель на первый элемент массива-матрицы (квадратной) (required)
+	2) Порядок матрицы (required)
+	3) Размер текстовой ячейки, определяемой под одно число матрицы (минимально это количество цифр в максимальном числе + 1) (опционально)
+	4) Скорость вывода элементов матрицы, в миллисекундах (опционально)
+	*/
+	cout << "\nTry to \"snake\" animation: \n";
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); // Нужно для получения данных курсора консоли
 	CONSOLE_SCREEN_BUFFER_INFO bi;
-	short rotate = 0;
-	int length = order;
-	int i = 0;
-	do {
-		for (int j = 0; j < length; j++) {
-			cout << inputArray[i];
-			i++;
-			switch (rotate) {
-			case 0:
-				cout << ' ';
-				break;
-			case 1:
+
+	int column = 0;
+	
+	while (column < order) {
+		for (int row = 0; row < order; row++) { // Вывод вниз
+			GetConsoleScreenBufferInfo(hConsole, &bi); // Получение координат курсора
+			bi.dwCursorPosition.Y += 1; // Вычисление новых координат курсора
+			bi.dwCursorPosition.X -= cellSize;
+			SetConsoleCursorPosition(hConsole, bi.dwCursorPosition); // Установка положения курсора
+			cout << setw(cellSize) << *(arr + row * order + column);
+			Sleep(delay); // Задержка
+		}
+		column++;
+		if (column < order) {
+			for (int row = order - 1; row >= 0; row--) { // Вывод вверх
+				cout << setw(cellSize) << *(arr + row * order + column);
+				Sleep(delay);
 				GetConsoleScreenBufferInfo(hConsole, &bi);
-				position.Y = bi.dwCursorPosition.Y + 1;
-				SetConsoleCursorPosition(hConsole, position);
-				break;
-			case 2:
-				cout << '\b';
-				break;
-			case 3:
-				GetConsoleScreenBufferInfo(hConsole, &bi);
-				position.Y = bi.dwCursorPosition.Y - 1;
-				SetConsoleCursorPosition(hConsole, position);
-				break;
+				bi.dwCursorPosition.Y -= 1;
+				bi.dwCursorPosition.X -= cellSize;
+				SetConsoleCursorPosition(hConsole, bi.dwCursorPosition);
 			}
+			column++;
+			GetConsoleScreenBufferInfo(hConsole, &bi);
+			bi.dwCursorPosition.X += (cellSize * 2);
+			SetConsoleCursorPosition(hConsole, bi.dwCursorPosition);
+		}
+		else break;
+	}
+	if (order % 2 == 0)
+		for (int i = 0; i < order; i++)
+			cout << endl;
+}
+
+void spiralAnimation(int arr[], int order, short cellSize, short delay) {
+	cout << "\n\nTry to spiral animation: \n";
+	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); // Нужно для получения данных курсора консоли
+	CONSOLE_SCREEN_BUFFER_INFO bi;
+
+	int length = order; // Длина текущего вывода
+	for (int i = 0; i < length; i++) { // Вывод вправо
+		cout << setw(cellSize) << *(arr + (order - length) * order + i);
+		Sleep(delay);
+	}
+	length--;
+	int upperRightBorder = order - 1;
+	int lowerLeftBorder = 0;
+	while (length > 0)
+	{
+		for (int i = 0, t = lowerLeftBorder + 1; i < length; i++, t++) { // Вывод вниз
+			GetConsoleScreenBufferInfo(hConsole, &bi);
+			bi.dwCursorPosition.Y += 1;
+			bi.dwCursorPosition.X -= (cellSize);
+			SetConsoleCursorPosition(hConsole, bi.dwCursorPosition);
+			cout << setw(cellSize) << *(arr + t * order + upperRightBorder);
+			Sleep(delay);
+		}
+
+		if (!(length > 0))
+			break;
+		for (int i = 0, t = upperRightBorder - 1; i < length; i++, t--) { // Вывод влево
+			GetConsoleScreenBufferInfo(hConsole, &bi);
+			bi.dwCursorPosition.X -= (cellSize * 2);
+			SetConsoleCursorPosition(hConsole, bi.dwCursorPosition);
+			cout << setw(cellSize) << *(arr + upperRightBorder * order + t);
+			Sleep(delay);
 		}
 		length--;
-		if (rotate < 3)
-			rotate++;
-		else rotate = 0;
-		for (int j = 0; j < length; j++) {
-			cout << inputArray[i];
-			i++;
-			switch (rotate) {
-			case 0:
-				cout << ' ';
-				break;
-			case 1:
-				GetConsoleScreenBufferInfo(hConsole, &bi);
-				position.Y = bi.dwCursorPosition.Y + 1;
-				SetConsoleCursorPosition(hConsole, position);
-				break;
-			case 2:
-				cout << '\b';
-				break;
-			case 3:
-				GetConsoleScreenBufferInfo(hConsole, &bi);
-				position.Y = bi.dwCursorPosition.Y - 1;
-				SetConsoleCursorPosition(hConsole, position);
-				break;
-			}
+		upperRightBorder--;
+
+		if (!(length > 0))
+			break;
+		for (int i = 0, t = upperRightBorder; i < length; i++, t--) { // Вывод вверх
+			GetConsoleScreenBufferInfo(hConsole, &bi);
+			bi.dwCursorPosition.Y -= 1;
+			bi.dwCursorPosition.X -= (cellSize);
+			SetConsoleCursorPosition(hConsole, bi.dwCursorPosition);
+			cout << setw(cellSize) << *(arr + t * order + lowerLeftBorder);
+			Sleep(delay);
 		}
-	} while (i <= order * order);
+		lowerLeftBorder++;
+
+		if (!(length > 0))
+			break;
+		for (int i = 0, t = lowerLeftBorder; i < length; i++, t++) { // Вывод вправо
+			cout << setw(cellSize) << *(arr + lowerLeftBorder * order + t);
+			Sleep(delay);
+		}
+		length--;
+	}
+
+	for (int i = 0; i <= (order / 2 + 1); i++)
+		cout << endl;
 }
