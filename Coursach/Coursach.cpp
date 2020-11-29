@@ -40,8 +40,6 @@ void diagonalPermutation(int[], int);
 void rowPermutation(int[], int);
 void columnPermutation(int[], int);
 
-
-
 int main()
 {
 	while (true) {
@@ -426,7 +424,7 @@ void bubbleSort(int inputArray[]) {
 				swapped = true;
 			}
 		}
-	} while (swapped == true); // Если за последний проход цикла никакие элементы не поменялись местами, цикл прерывается.
+	} while (swapped); // Если за последний проход цикла никакие элементы не поменялись местами, цикл прерывается.
 }
 
 void shakerSort(int inputArray[]) {
@@ -657,9 +655,9 @@ void practicalWork3() {
 	for (int i = 0; i < order; i++)
 		for (int j = 0; j < order; j++) // В массив пишутся случайные числа от 1 до N*N, где N - порядок матрицы. 
 			*(ptrarray + i * order + j) = 1 + rand() % (order * order);
-	cout << endl;
+
 	do {
-		cout << "Enter the type of animation:"
+		cout << "\nEnter the type of animation:"
 			<< "\n\t1) Snake animation"
 			<< "\n\t2) Spiral animation \n>> ";
 		inputIsCorrected = true;
@@ -682,13 +680,14 @@ void practicalWork3() {
 
 	} while (choiseNextAction());
 
+	int *copiedArr = new int[order * order]; // Копирование массива в другой массив для возможности повторно произвести перестановку элементов.
 	do {
-		int *copiedArr = new int[order * order]; // Копирование массива в другой массив для возможности повторно произвести перестановку элементов.
 		for (int i = 0; i < order; i++)
 			for (int j = 0; j < order; j++)
 				*(copiedArr + i * order + j) = *(ptrarray + i * order + j);
 
-		cout << "Enter the type of permutation:"
+		cout << "\nTask 2. Permutation of matrix elements"
+			<< "\nEnter the type of permutation:"
 			<< "\n\t1) Consistent"
 			<< "\n\t2) Diagonal"
 			<< "\n\t3) Row"
@@ -727,6 +726,90 @@ void practicalWork3() {
 		}
 	} while (choiseNextAction());
 
+	cout << "\nTask 3. Matrix sorting"
+		<< "\nBubble sorted array: \n";
+	bool swapped;
+	do {
+		swapped = false;
+		for (int i = 0; i < order * order - 1; i++) {
+			if (*(copiedArr + i) > *(copiedArr + i + 1)) { // Соседние элементы массива меняются местами
+				int t = *(copiedArr + i);
+				*(copiedArr + i) = *(copiedArr + i + 1);
+				*(copiedArr + i + 1) = t;
+				swapped = true;
+			}
+		}
+	} while (swapped);
+
+	for (int i = 0; i < order; i++) {
+		for (int j = 0; j < order; j++)
+			cout << setw(4) << *(copiedArr + i * order + j);
+		cout << endl;
+	}
+	
+	do {
+		cout << "\nTask 4. Matrix operations"
+			<< "\nEnter the type of operation:"
+			<< "\n\t1) Reducing the matrix by a number"
+			<< "\n\t2) Increacing the matrix by a number"
+			<< "\n\t3) Matrix multiplication by a number"
+			<< "\n\t4) Dividing the matrix by a number \n>> ";
+		/*
+		Если бы данная программа использовалась для чего-то большего, чем написание курсовой, то её однозначно стоило бы доработать на предмет возможности работы с нецелыми числами, т. к. в случае деления чисел матрицы на введённое пользователем число очень часто могут получаться нецелые числа в ячейках матрицы, а в данном случае мы будем видеть искажённый результат.
+		*/
+		inputIsCorrected = true;
+		int input;
+		do {
+			cin >> input;
+			if (input == 1 || input == 2 || input == 3 || input == 4)
+				inputIsCorrected = false;
+			else {
+				cout << "Wrong input! Try again...\n\n>> ";
+				break;
+			}
+		} while (inputIsCorrected);
+		int number;
+		cout << "\nEnter the integer: \n>> ";
+		cin >> number;
+		switch (input) {
+		case 1:
+			for (int i = 0; i < order; i++) {
+				for (int j = 0; j < order; j++) {
+					*(copiedArr + i * order + j) -= number;
+					cout << setw(4) << *(copiedArr + i * order + j);
+				}
+				cout << endl;
+			}
+			break;
+		case 2:
+			for (int i = 0; i < order; i++) {
+				for (int j = 0; j < order; j++) {
+					*(copiedArr + i * order + j) += number;
+					cout << setw(4) << *(copiedArr + i * order + j);
+				}
+				cout << endl;
+			}
+			break;
+		case 3:
+			for (int i = 0; i < order; i++) {
+				for (int j = 0; j < order; j++) {
+					*(copiedArr + i * order + j) *= number;
+					cout << setw(4) << *(copiedArr + i * order + j);
+				}
+				cout << endl;
+			}
+			break;
+		case 4:
+			for (int i = 0; i < order; i++) {
+				for (int j = 0; j < order; j++) {
+					*(copiedArr + i * order + j) /= number;
+					cout << setw(4) << *(copiedArr + i * order + j);
+				}
+				cout << endl;
+			}
+			break;
+		}
+	} while (choiseNextAction());
 }
 
 void snakeAnimation(int arr[], int order, short cellSize, short delay) {
@@ -836,7 +919,7 @@ void spiralAnimation(int arr[], int order, short cellSize, short delay) {
 }
 
 void consistentPermutation(int arr[], int order) {
-	// Определение порядка "рабочей четверти" матрицы, элементы которой (четверти) далее будут перебираться
+	// Определение порядка "рабочей четверти" матрицы, элементы которой (четверти) далее будут перебираться (разное поведение для матриц чётного и нечётного порядка)
 	int halfOrder = ceil(static_cast<float>(order) / 2);
 	for (int i = 0; i < order / 2; i++) {
 		for (int j = 0; j < order / 2; j++) {
