@@ -35,6 +35,12 @@ long long stopNanoSecondsTimer(time_point<steady_clock>);
 
 void snakeAnimation(int[], int, short cellSize = 4, short delay = 100);
 void spiralAnimation(int[], int, short cellSize = 4, short delay = 100);
+void consistentPermutation(int[], int);
+void diagonalPermutation(int[], int);
+void rowPermutation(int[], int);
+void columnPermutation(int[], int);
+
+
 
 int main()
 {
@@ -653,10 +659,10 @@ void practicalWork3() {
 			*(ptrarray + i * order + j) = 1 + rand() % (order * order);
 	cout << endl;
 	do {
-		inputIsCorrected = true;
 		cout << "Enter the type of animation:"
 			<< "\n\t1) Snake animation"
-			<< "\n\t2) Spiral animation\n>> ";
+			<< "\n\t2) Spiral animation \n>> ";
+		inputIsCorrected = true;
 		do {
 			int input;
 			cin >> input;
@@ -675,6 +681,52 @@ void practicalWork3() {
 		} while (inputIsCorrected);
 
 	} while (choiseNextAction());
+
+	do {
+		int *copiedArr = new int[order * order]; // Копирование массива в другой массив для возможности повторно произвести перестановку элементов.
+		for (int i = 0; i < order; i++)
+			for (int j = 0; j < order; j++)
+				*(copiedArr + i * order + j) = *(ptrarray + i * order + j);
+
+		cout << "Enter the type of permutation:"
+			<< "\n\t1) Consistent"
+			<< "\n\t2) Diagonal"
+			<< "\n\t3) Row"
+			<< "\n\t4) Column \n>> ";
+		inputIsCorrected = true;
+		do {
+			int input;
+			cin >> input;
+			switch (input) {
+			case 1:
+				consistentPermutation(copiedArr, order);
+				inputIsCorrected = false;
+				break;
+			case 2:
+				diagonalPermutation(copiedArr, order);
+				inputIsCorrected = false;
+				break;
+			case 3:
+				rowPermutation(copiedArr, order);
+				inputIsCorrected = false;
+				break;
+			case 4:
+				columnPermutation(copiedArr, order);
+				inputIsCorrected = false;
+				break;
+			default:
+				cout << "Wrong input! Try again...\n\n>> ";
+			}
+		} while (inputIsCorrected);
+
+		cout << endl; // Вывод получившегося массива.
+		for (int i = 0; i < order; i++) {
+			for (int j = 0; j < order; j++)
+				cout << setw(4) << *(copiedArr + i * order + j);
+			cout << endl;
+		}
+	} while (choiseNextAction());
+
 }
 
 void snakeAnimation(int arr[], int order, short cellSize, short delay) {
@@ -683,6 +735,7 @@ void snakeAnimation(int arr[], int order, short cellSize, short delay) {
 	2) Порядок матрицы (required)
 	3) Размер текстовой ячейки, определяемой под одно число матрицы (минимально это количество цифр в максимальном числе + 1) (опционально)
 	4) Скорость вывода элементов матрицы, в миллисекундах (опционально)
+	Функции других анимаций работают аналогично.
 	*/
 	cout << "\nTry to \"snake\" animation: \n";
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE); // Нужно для получения данных курсора консоли
@@ -780,4 +833,69 @@ void spiralAnimation(int arr[], int order, short cellSize, short delay) {
 
 	for (int i = 0; i <= (order / 2); i++)
 		cout << endl;
+}
+
+void consistentPermutation(int arr[], int order) {
+	// Определение порядка "рабочей четверти" матрицы, элементы которой (четверти) далее будут перебираться
+	int halfOrder = ceil(static_cast<float>(order) / 2);
+	for (int i = 0; i < order / 2; i++) {
+		for (int j = 0; j < order / 2; j++) {
+			// Определение индекса текущего опорного элемента, далее будет производиться работа над элементами с таким же индексом, только в других четвертях матрицы
+			int *p = (arr + i * order + j);
+			int t = *p;
+			// *p - элемент левой верхней четверти, "рабочей четверти" матрицы
+			*p = *(p + halfOrder * order);
+			// *(p + halfOrder * order) - элемент левой нижней четверти матрицы
+			*(p + halfOrder * order) = *(p + halfOrder * order + halfOrder); 
+			// *(p + halfOrder * order + halfOrder) - элемент правой нижней четверти матрицы
+			*(p + halfOrder * order + halfOrder) = *(p + halfOrder); 
+			// элемент правой верхней четверти матрицы
+			*(p + halfOrder) = t; 
+		}
+	}
+}
+
+void diagonalPermutation(int arr[], int order) {
+	int halfOrder = ceil(static_cast<float>(order) / 2);
+	for (int i = 0; i < order / 2; i++) {
+		for (int j = 0; j < order / 2; j++) {
+			int *p = (arr + i * order + j);
+			int t = *p;
+			*p = *(p + halfOrder * order + halfOrder);
+			*(p + halfOrder * order + halfOrder) = t;
+			t = *(p + halfOrder);
+			*(p + halfOrder) = *(p + halfOrder * order);
+			*(p + halfOrder * order) = t;
+		}
+	}
+}
+
+void rowPermutation(int arr[], int order) {
+	int halfOrder = ceil(static_cast<float>(order) / 2);
+	for (int i = 0; i < order / 2; i++) {
+		for (int j = 0; j < order / 2; j++) {
+			int *p = (arr + i * order + j);
+			int t = *p;
+			*p = *(p + halfOrder * order);
+			*(p + halfOrder * order) = t;
+			t = *(p + halfOrder);
+			*(p + halfOrder) = *(p + halfOrder * order + halfOrder);
+			*(p + halfOrder * order + halfOrder) = t;
+		}
+	}
+}
+
+void columnPermutation(int arr[], int order) {
+	int halfOrder = ceil(static_cast<float>(order) / 2);
+	for (int i = 0; i < order / 2; i++) {
+		for (int j = 0; j < order / 2; j++) {
+			int *p = (arr + i * order + j);
+			int t = *p;
+			*p = *(p + halfOrder);
+			*(p + halfOrder) = t;
+			t = *(p + halfOrder * order);
+			*(p + halfOrder * order) = *(p + halfOrder * order + halfOrder);
+			*(p + halfOrder * order + halfOrder) = t;
+		}
+	}
 }
