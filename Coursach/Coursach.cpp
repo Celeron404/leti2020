@@ -3,18 +3,23 @@
 #include <chrono> // Нужно для засечения времени
 #include <Windows.h> // Нужно для получения координат консоли и их изменения
 #include <iomanip> // нужно для std::setw
+#include <string>
+#include <fstream> // нужно для чтения файлов
 using namespace std::chrono; // Нужно для засечения времени
 using namespace std;
 
 void practicalWork1();
 void practicalWork2();
 void practicalWork3();
+void practicalWork4();
 
+// Функции, использующиеся в первой практической работе
 void intToBinary(int);
 void floatToBinary(int);
 void doubleToBinary(int, int);
 int readInt();
 
+// Функции, использующиеся во второй практической работе
 void createAndPrintRandomArray(int[]);
 void bubbleSort(int[]);
 void shakerSort(int[]);
@@ -33,12 +38,17 @@ bool choiseNextAction();
 float stopSecondsTimer(time_point<steady_clock>);
 long long stopNanoSecondsTimer(time_point<steady_clock>);
 
+// Функции, использующиеся в третьей практической работе
 void snakeAnimation(int[], int, short cellSize = 4, short delay = 100);
 void spiralAnimation(int[], int, short cellSize = 4, short delay = 100);
 void consistentPermutation(int[], int);
 void diagonalPermutation(int[], int);
 void rowPermutation(int[], int);
 void columnPermutation(int[], int);
+
+
+// Функции, использующиеся в четвёртой практической работе
+char * readFile(string);
 
 int main()
 {
@@ -47,7 +57,8 @@ int main()
 		cout << "Practical works: \n"
 			<< "\t1) Data types and their internal representation in computer memory \n"
 			<< "\t2) Static One-Dimensional Massives \n"
-			<< "\t3) Arythmetics of pointers. Matrixes \n\n"
+			<< "\t3) Arythmetics of pointers. Matrixes \n"
+			<< "\t4) Working with a text string \n"
 			<< "Enter the number of practical work or enter 0 for close the program... \n>> ";
 		int input;
 		cin >> input;
@@ -63,6 +74,10 @@ int main()
 		case 3:
 			system("CLS");
 			practicalWork3();
+			break;
+		case 4:
+			system("CLS");
+			practicalWork4();
 			break;
 		default:
 			goto Exit;
@@ -812,6 +827,65 @@ void practicalWork3() {
 	} while (choiseNextAction());
 }
 
+void practicalWork4() {
+	system("CLS");
+	cout << "Solution of task \"Working with a text string\". \n\n"
+		<< "Task 1. Editing text. \n"
+		<< "Enter the input type: \n"
+		<< "1) Keyboard \n"
+		<< "2) File	\n>> ";
+	int input;
+	bool inputIsCorrected = true;
+	do {
+		cin >> input;
+		if (input == 1 || input == 2)
+			inputIsCorrected = false;
+		else {
+			cout << "Wrong input! Try again...\n>> ";
+		}
+	} while (inputIsCorrected);
+	string sourceStr;
+	switch (input) {
+	case 1:
+		do {
+			cout << "\nEnter the string for edit (only English). For ending press Enter... \n>> ";
+			cin.ignore(32767, '\n');
+			getline(cin, sourceStr);
+			cout << "You entered: \n" << sourceStr << endl;
+		} while (choiseNextAction());
+		break;
+	case 2:
+		do {
+			ifstream file;
+			string input;
+			do {
+				cout << "\n Enter the path to the file. \n"
+					<< "Only english words in the file and path! Example: C:\\anime\\flex.txt \n>> ";
+				string path;
+				cin.ignore(32767, '\n');
+				getline(cin, path);
+				file.open(path);
+				if (!file.is_open()) {
+					cout << "Error opening file! \n";
+					continue;
+				}
+				//pointer_dynarr = new char(sizeof(file));
+				//cin.ignore(32767, '\n');
+				//while (!file.eof()) {
+				//	file.getline(input, sizeof(file));
+				//}
+				getline(file, input);
+
+			} while (!file.is_open());
+			
+			cout << "You entered: \n"
+				<< input << endl;
+			file.close();
+		} while (choiseNextAction());
+		break;
+	}
+}
+
 void snakeAnimation(int arr[], int order, short cellSize, short delay) {
 	/* Функция принимает на вход:
 	1) Указатель на первый элемент массива-матрицы (квадратной) (required)
@@ -981,4 +1055,22 @@ void columnPermutation(int arr[], int order) {
 			*(p + halfOrder * order + halfOrder) = t;
 		}
 	}
+}
+
+char * readFile(string fileName) {
+	ifstream file;
+	file.open(fileName);
+	if (!file.is_open()) {
+		cout << "Error opening file! \n";
+		return 0;
+	}
+	char *pointerArr = new char[sizeof(file)];
+	//cin.ignore(32767, '\n');
+	while (!file.eof())
+	{
+		file.getline(pointerArr, sizeof(file));
+	}
+	cout << pointerArr;
+	return pointerArr;
+	system("pause");
 }
