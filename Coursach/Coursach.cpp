@@ -830,34 +830,31 @@ void practicalWork3() {
 void practicalWork4() {
 	system("CLS");
 	cout << "Solution of task \"Working with a text string\". \n\n"
-		<< "Task 1. Editing text. \n"
-		<< "Enter the input type: \n"
-		<< "1) Keyboard \n"
-		<< "2) File	\n>> ";
-	int input;
-	bool inputIsCorrected = true;
+		<< "Task 1. Editing text. \n";
 	do {
-		cin >> input;
-		if (input == 1 || input == 2)
-			inputIsCorrected = false;
-		else {
-			cout << "Wrong input! Try again...\n>> ";
-		}
-	} while (inputIsCorrected);
-	string sourceStr;
-	switch (input) {
-	case 1:
+		cout << "Enter the input type: \n"
+			<< "1) Keyboard \n"
+			<< "2) File	\n>> ";
+		int input;
+		bool inputIsCorrected = true;
 		do {
-			cout << "\nEnter the string for edit (only English). For ending press Enter... \n>> ";
-			cin.ignore(32767, '\n');
-			getline(cin, sourceStr);
-			cout << "You entered: \n" << sourceStr << endl;
-		} while (choiseNextAction());
-		break;
-	case 2:
-		do {
+			cin >> input;
+			if (input == 1 || input == 2)
+				inputIsCorrected = false;
+			else {
+				cout << "Wrong input! Try again...\n>> ";
+			}
+		} while (inputIsCorrected);
+		string sourceStr;
+		switch (input) {
+		case 1:
+				cout << "\nEnter the string for edit (only English). For ending press Enter... \n>> ";
+				cin.ignore(32767, '\n');
+				getline(cin, sourceStr);
+				cout << "You entered: \n" << sourceStr << endl;
+			break;
+		case 2:
 			ifstream file;
-			string input;
 			do {
 				cout << "\n Enter the path to the file. \n"
 					<< "Only english words in the file and path! Example: C:\\anime\\flex.txt \n>> ";
@@ -869,21 +866,15 @@ void practicalWork4() {
 					cout << "Error opening file! \n";
 					continue;
 				}
-				//pointer_dynarr = new char(sizeof(file));
-				//cin.ignore(32767, '\n');
-				//while (!file.eof()) {
-				//	file.getline(input, sizeof(file));
-				//}
-				getline(file, input);
-
+				getline(file, sourceStr);
 			} while (!file.is_open());
-			
+
 			cout << "You entered: \n"
-				<< input << endl;
+				<< sourceStr << endl;
 			file.close();
-		} while (choiseNextAction());
-		break;
-	}
+			break;
+		}
+	} while (choiseNextAction());
 }
 
 void snakeAnimation(int arr[], int order, short cellSize, short delay) {
