@@ -46,9 +46,9 @@ void diagonalPermutation(int[], int);
 void rowPermutation(int[], int);
 void columnPermutation(int[], int);
 
-
 // Функции, использующиеся в четвёртой практической работе
 char * readFile(string);
+string textCleaner(string);
 
 int main()
 {
@@ -831,8 +831,9 @@ void practicalWork4() {
 	system("CLS");
 	cout << "Solution of task \"Working with a text string\". \n\n"
 		<< "Task 1. Editing text. \n";
+	string sourceStr;
 	do {
-		cout << "Enter the input type: \n"
+		cout << "\nEnter the input type: \n"
 			<< "1) Keyboard \n"
 			<< "2) File	\n>> ";
 		int input;
@@ -845,7 +846,6 @@ void practicalWork4() {
 				cout << "Wrong input! Try again...\n>> ";
 			}
 		} while (inputIsCorrected);
-		string sourceStr;
 		switch (input) {
 		case 1:
 				cout << "\nEnter the string for edit (only English). For ending press Enter... \n>> ";
@@ -875,6 +875,12 @@ void practicalWork4() {
 			break;
 		}
 	} while (choiseNextAction());
+
+	cout << "Task 2. Text cleaning. \n"
+		<< "Entered text without innecessary characters, spaces and case of letters: \n";
+	cout << textCleaner(sourceStr) << endl;
+
+	system("pause");
 }
 
 void snakeAnimation(int arr[], int order, short cellSize, short delay) {
@@ -1063,5 +1069,24 @@ char * readFile(string fileName) {
 	}
 	cout << pointerArr;
 	return pointerArr;
-	system("pause");
+}
+
+string textCleaner(string inputStr) {
+	for (int i = 1; i < (sizeof(inputStr) * 8); i++) {
+		if (
+			(inputStr[i - 1] == inputStr[i])
+			&& (inputStr[i] != 46)
+			&& (
+			(inputStr[i] <= 64)
+				|| (
+				(inputStr[i] >= 91) && (inputStr[i] <= 96)
+					)
+				|| (inputStr[i] >= 123)
+				)
+			) {
+			//for (int j = i - 1; inputStr[j] == inputStr[i]; j++)
+				//inputStr[j] = 0;
+		}
+	}
+	return inputStr;
 }
