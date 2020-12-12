@@ -869,8 +869,7 @@ void practicalWork4() {
 				getline(file, sourceStr);
 			} while (!file.is_open());
 
-			cout << "You entered: \n"
-				<< sourceStr << endl;
+			cout << "You entered: \n" << sourceStr << endl;
 			file.close();
 			break;
 		}
@@ -1062,7 +1061,6 @@ char * readFile(string fileName) {
 		return 0;
 	}
 	char *pointerArr = new char[sizeof(file)];
-	//cin.ignore(32767, '\n');
 	while (!file.eof())
 	{
 		file.getline(pointerArr, sizeof(file));
@@ -1072,9 +1070,11 @@ char * readFile(string fileName) {
 }
 
 string textCleaner(string inputStr) {
-	for (int i = 1; i < (sizeof(inputStr) * 8); i++) {
+	int size = inputStr.size();
+	for (int i = 1; i < size; i++) {
 		if (
 			(inputStr[i - 1] == inputStr[i])
+			//&& (inputStr[i] != 32)
 			&& (inputStr[i] != 46)
 			&& (
 			(inputStr[i] <= 64)
@@ -1084,9 +1084,22 @@ string textCleaner(string inputStr) {
 				|| (inputStr[i] >= 123)
 				)
 			) {
-			//for (int j = i - 1; inputStr[j] == inputStr[i]; j++)
-				//inputStr[j] = 0;
+			for (int j = i;(j < size) && (inputStr[j] == inputStr[i - 1]); j++)
+				//inputStr[j] = 32;
+				inputStr[j] = 0;
 		}
 	}
+
+	for (int i = 1; i < size; i++) {
+		if (
+			(inputStr[i] >= 65) && (inputStr[i] <= 90)
+			&& ( 
+				((inputStr[i - 1] >= 97) && (inputStr[i - 1] <= 122))
+				|| ((inputStr[i - 1] >= 65) && (inputStr[i - 1] <= 90))
+				)
+			)
+			inputStr[i] = inputStr[i] + 32;
+	}
+
 	return inputStr;
 }
