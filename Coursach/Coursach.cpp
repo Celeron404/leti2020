@@ -869,13 +869,13 @@ void practicalWork4() {
 				getline(file, sourceStr);
 			} while (!file.is_open());
 
-			cout << "You entered: \n" << sourceStr << endl;
+			cout << "\nYou entered: \n" << sourceStr << endl;
 			file.close();
 			break;
 		}
 	} while (choiseNextAction());
 
-	cout << "Task 2. Text cleaning. \n"
+	cout << "\nTask 2. Text cleaning. \n"
 		<< "Entered text without innecessary characters, spaces and case of letters: \n";
 	cout << textCleaner(sourceStr) << endl;
 
