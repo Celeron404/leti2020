@@ -50,6 +50,7 @@ void columnPermutation(int[], int);
 char * readFile(string);
 string textCleaner(string);
 bool isSymbol(char);
+void reverseOutput(string);
 
 int main()
 {
@@ -878,8 +879,14 @@ void practicalWork4() {
 
 	cout << "\nTask 2. Text cleaning. \n"
 		<< "Entered text without innecessary characters, spaces and case of letters: \n";
-	cout << textCleaner(sourceStr) << endl;
+	sourceStr = textCleaner(sourceStr);
+	cout << sourceStr << endl << endl;
+	system("pause");
 
+	cout << "\nTask 3."
+		<< "\nOutput words in reverse order: \n";
+	reverseOutput(sourceStr);
+	cout << endl;
 	system("pause");
 }
 
@@ -1072,28 +1079,10 @@ char * readFile(string fileName) {
 
 string textCleaner(string inputStr) {
 	int size = inputStr.size();
-
 	bool isChanged;
 	do {
 		isChanged = false;
 		for (int i = 1; i < size; i++) {
-			/*
-			if (
-				(inputStr[i - 1] == inputStr[i])
-				//&& (inputStr[i] != 32)
-				&& (inputStr[i] != 46)
-				&& (
-				(inputStr[i] <= 64)
-					|| (
-					(inputStr[i] >= 91) && (inputStr[i] <= 96)
-						)
-					|| (inputStr[i] >= 123)
-					)
-				) {
-				for (int j = i;(j < size) && (inputStr[j] == inputStr[i - 1]); j++)
-					//inputStr[j] = 32;
-					inputStr[j] = 0;
-					*/
 			if ( // Удаляем лишние символы
 				(isSymbol(inputStr[i])) && (isSymbol(inputStr[i - 1]))
 				)
@@ -1110,8 +1099,6 @@ string textCleaner(string inputStr) {
 				&& (inputStr[i - 2] == ' ')
 				) {
 				inputStr[i - 1] = 32;
-				//inputStr[i] = 32;
-				//inputStr[i - 1] = 32;
 				isChanged = true;
 			}
 		}
@@ -1121,7 +1108,6 @@ string textCleaner(string inputStr) {
 		if ((inputStr[i] == ' ') && (inputStr[i - 1] == ' ')) // Удаляем лишние пробелы
 			for (int j = i; (j < size) && (inputStr[j] == ' '); j++) {
 				inputStr[j] = 0;
-				//isChanged = true;
 			}
 	}
 	
@@ -1150,4 +1136,20 @@ bool isSymbol (char c) { // Если текущий элемент являет�
 		return true;
 	else
 		return false;
+}
+
+void reverseOutput(string inputStr) {
+	int size = inputStr.size();
+	for (int i = size - 1; i >= 0; i--) {
+		if (inputStr[i] == ' ') {
+			for (int j = i + 1; (j < size) && (inputStr[j] != ' '); j++)
+				cout << inputStr[j];
+			cout << ' ';
+		}
+		else
+			if (i == 0)
+				for (int j = i; inputStr[j] != ' '; j++)
+					cout << inputStr[j];
+	}
+	cout << endl;
 }
