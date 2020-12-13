@@ -50,8 +50,10 @@ void columnPermutation(int[], int);
 char * readFile(string);
 string textCleaner(string);
 bool isSymbol(char);
-void reverseOutput(string);
 string deleteChar(string, int, int);
+void reverseOutput(string);
+int countOfWords(string);
+void wordOutput(string, int, int);
 
 int main()
 {
@@ -862,6 +864,7 @@ void practicalWork4() {
 				cout << "\nEnter the path to the file. \n"
 					<< "Only english words in the file and path! Example: C:\\anime\\flex.txt \n>> ";
 				string path;
+				cin.ignore(32767, '\n');
 				getline(cin, path);
 				file.open(path);
 				if (!file.is_open()) {
@@ -886,6 +889,38 @@ void practicalWork4() {
 	cout << "\nTask 3."
 		<< "\nOutput words in reverse order: \n";
 	reverseOutput(sourceStr);
+	cout << endl;
+	system("pause");
+
+	cout << "\nTask 4."
+		<< "\nDisplay text in columns: \n";
+	cout << countOfWords(sourceStr) << endl << endl;
+	int size = sourceStr.size();
+	int pos = 0;
+	if ((countOfWords(sourceStr) % 2) == 0) {
+		while (pos < size) {
+			for (int i = 0; i < 2; i++) { // Вывод по 2 слова в строку
+				while ((sourceStr[pos] != ' ') && (pos < size)) {
+					cout << sourceStr[pos];
+					pos++;
+				}
+				pos++;
+				cout << '\t';
+			}
+			cout << endl;
+		}
+	} else
+		while (pos < size) {
+			for (int i = 0; i < 3; i++) { // Вывод по 3 слова в строку
+				while ((sourceStr[pos] != ' ') && (pos < size)) {
+					cout << sourceStr[pos];
+					pos++;
+				}
+				pos++;
+				cout << '\t';
+			}
+			cout << endl;
+		}
 	cout << endl;
 	system("pause");
 }
@@ -1142,7 +1177,7 @@ string textCleaner(string inputStr) {
 				|| ((inputStr[i - 1] >= 65) && (inputStr[i - 1] <= 90))
 				)
 			)
-			inputStr[i] = inputStr[i] + 32;
+			inputStr[i] = inputStr[i] + 32; // Замена прописной буквы на строчную
 	}
 	return inputStr;
 }
@@ -1159,7 +1194,7 @@ bool isSymbol (char c) { // Если элемент является знако�
 		return false;
 }
 
-string deleteChar(string inputStr, int size, int pos) {
+string deleteChar(string inputStr, int size, int pos) { // Удаление элемента путём смещения массива влево. В теории можно реализовать более эффективный алгоритм, смещая до ближайшего вхождения условия, но ещё нескольких вечеров на перелопачивание алгоритма нет, да и задачи на написание максимально эффективного алгоритма нет.
 	for (int i = pos; i < (size - 1); i++)
 		inputStr[i] = inputStr[i + 1];
 	inputStr.erase(size - 1);
@@ -1180,4 +1215,22 @@ void reverseOutput(string inputStr) {
 					cout << inputStr[j];
 	}
 	cout << endl;
+}
+
+int countOfWords(string inputStr) {
+	int size = inputStr.size();
+	int count = 1;
+	for (int i = 0; i < size; i++)
+		if (inputStr[i] == ' ')
+			count++;
+	return count;
+}
+void wordOutput(string inputStr, int size, int pos) {
+	for (int i = pos; (i < size) && (inputStr[i] != ' '); i++) {
+		cout << inputStr[i];
+	}
+}
+
+int longestWord(string inputStr) {
+	
 }
