@@ -49,6 +49,7 @@ void columnPermutation(int[], int);
 // Функции, использующиеся в четвёртой практической работе
 char * readFile(string);
 string textCleaner(string);
+bool isSymbol(char);
 
 int main()
 {
@@ -1071,26 +1072,61 @@ char * readFile(string fileName) {
 
 string textCleaner(string inputStr) {
 	int size = inputStr.size();
-	for (int i = 1; i < size; i++) {
-		if (
-			(inputStr[i - 1] == inputStr[i])
-			//&& (inputStr[i] != 32)
-			&& (inputStr[i] != 46)
-			&& (
-			(inputStr[i] <= 64)
-				|| (
-				(inputStr[i] >= 91) && (inputStr[i] <= 96)
+
+	bool isChanged;
+	do {
+		isChanged = false;
+		for (int i = 1; i < size; i++) {
+			/*
+			if (
+				(inputStr[i - 1] == inputStr[i])
+				//&& (inputStr[i] != 32)
+				&& (inputStr[i] != 46)
+				&& (
+				(inputStr[i] <= 64)
+					|| (
+					(inputStr[i] >= 91) && (inputStr[i] <= 96)
+						)
+					|| (inputStr[i] >= 123)
 					)
-				|| (inputStr[i] >= 123)
+				) {
+				for (int j = i;(j < size) && (inputStr[j] == inputStr[i - 1]); j++)
+					//inputStr[j] = 32;
+					inputStr[j] = 0;
+					*/
+			if ( // Удаляем лишние символы
+				(isSymbol(inputStr[i])) && (isSymbol(inputStr[i - 1]))
 				)
-			) {
-			for (int j = i;(j < size) && (inputStr[j] == inputStr[i - 1]); j++)
-				//inputStr[j] = 32;
-				inputStr[j] = 0;
+				for (int j = i; (j < size) && ((inputStr[j] != '.') && isSymbol(inputStr[j])); j++) {
+					inputStr[j] = 32;
+					isChanged = true;
+				}
+
+			if ( // Редкие сочетания типа "пробел-знак препинания-пробел"? кроме тире
+				(i >= 2)
+				&& (inputStr[i] == ' ')
+				&& (isSymbol(inputStr[i - 1]))
+				&& (inputStr[i - 1] != '-')
+				&& (inputStr[i - 2] == ' ')
+				) {
+				inputStr[i - 1] = 32;
+				//inputStr[i] = 32;
+				//inputStr[i - 1] = 32;
+				isChanged = true;
+			}
 		}
-	}
+	} while (isChanged);
 
 	for (int i = 1; i < size; i++) {
+		if ((inputStr[i] == ' ') && (inputStr[i - 1] == ' ')) // Удаляем лишние пробелы
+			for (int j = i; (j < size) && (inputStr[j] == ' '); j++) {
+				inputStr[j] = 0;
+				//isChanged = true;
+			}
+	}
+	
+
+	for (int i = 1; i < size; i++) { // Исправление регистра
 		if (
 			(inputStr[i] >= 65) && (inputStr[i] <= 90)
 			&& ( 
@@ -1102,4 +1138,16 @@ string textCleaner(string inputStr) {
 	}
 
 	return inputStr;
+}
+
+bool isSymbol (char c) { // Если текущий элемент является знаком препинания
+	if (
+		((c >= 33) && (c <= 47))
+			|| ((c >= 58) && (c <= 64))
+			|| ((c >= 91) && (c <= 96))
+			|| (c >= 123)
+		)
+		return true;
+	else
+		return false;
 }
