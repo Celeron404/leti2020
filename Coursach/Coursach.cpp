@@ -51,6 +51,7 @@ char * readFile(string);
 string textCleaner(string);
 bool isSymbol(char);
 void reverseOutput(string);
+string deleteChar(string, int, int);
 
 int main()
 {
@@ -858,10 +859,9 @@ void practicalWork4() {
 		case 2:
 			ifstream file;
 			do {
-				cout << "\n Enter the path to the file. \n"
+				cout << "\nEnter the path to the file. \n"
 					<< "Only english words in the file and path! Example: C:\\anime\\flex.txt \n>> ";
 				string path;
-				cin.ignore(32767, '\n');
 				getline(cin, path);
 				file.open(path);
 				if (!file.is_open()) {
@@ -1066,6 +1066,8 @@ char * readFile(string fileName) {
 	file.open(fileName);
 	if (!file.is_open()) {
 		cout << "Error opening file! \n";
+		cin.ignore(32767, '\n');
+		cin.clear();
 		return 0;
 	}
 	char *pointerArr = new char[sizeof(file)];
@@ -1085,11 +1087,12 @@ string textCleaner(string inputStr) {
 		for (int i = 1; i < size; i++) {
 			if ( // Удаляем лишние символы
 				(isSymbol(inputStr[i])) && (isSymbol(inputStr[i - 1]))
-				)
-				for (int j = i; (j < size) && ((inputStr[j] != '.') && isSymbol(inputStr[j])); j++) {
-					inputStr[j] = 32;
-					isChanged = true;
-				}
+				&& (inputStr[i] != '.')
+				) {
+				inputStr = deleteChar(inputStr, size, i);
+				size--;
+				isChanged = true;
+			}
 
 			if ( // Редкие сочетания типа "пробел-знак препинания-пробел"? кроме тире
 				(i >= 2)
@@ -1098,35 +1101,53 @@ string textCleaner(string inputStr) {
 				&& (inputStr[i - 1] != '-')
 				&& (inputStr[i - 2] == ' ')
 				) {
-				inputStr[i - 1] = 32;
+				inputStr = deleteChar(inputStr, size, i - 1);
+				size--;
+				isChanged = true;
+			}
+		}
+
+		for (int i = 2; i < size; i++) { // Редкие случаи с точками
+			if (
+				(inputStr[i] == '.')
+				&& ((isSymbol(inputStr[i - 1])) || (inputStr[i - 1] == ' '))
+				&& (inputStr[i - 1] != '.')
+				&& (inputStr[i - 1] != ')')
+				&& (inputStr[i - 1] != '"')
+				&& (inputStr[i - 1] != ']')
+				&& (inputStr[i - 1] != '}')
+				&& (inputStr[i - 1] != '>')
+				) {
+				inputStr = deleteChar(inputStr, size, i);
+				size--;
+				isChanged = true;
+			}
+		}
+
+		for (int i = 1; i < size; i++) {
+			if ((inputStr[i] == ' ') && (inputStr[i - 1] == ' ')) { // Удаляем лишние пробелы
+				inputStr = deleteChar(inputStr, size, i);
+				size--;
 				isChanged = true;
 			}
 		}
 	} while (isChanged);
 
-	for (int i = 1; i < size; i++) {
-		if ((inputStr[i] == ' ') && (inputStr[i - 1] == ' ')) // Удаляем лишние пробелы
-			for (int j = i; (j < size) && (inputStr[j] == ' '); j++) {
-				inputStr[j] = 0;
-			}
-	}
-	
 
 	for (int i = 1; i < size; i++) { // Исправление регистра
 		if (
 			(inputStr[i] >= 65) && (inputStr[i] <= 90)
-			&& ( 
-				((inputStr[i - 1] >= 97) && (inputStr[i - 1] <= 122))
+			&& (
+			((inputStr[i - 1] >= 97) && (inputStr[i - 1] <= 122))
 				|| ((inputStr[i - 1] >= 65) && (inputStr[i - 1] <= 90))
 				)
 			)
 			inputStr[i] = inputStr[i] + 32;
 	}
-
 	return inputStr;
 }
 
-bool isSymbol (char c) { // Если текущий элемент является знаком препинания
+bool isSymbol (char c) { // Если элемент является знаком препинания
 	if (
 		((c >= 33) && (c <= 47))
 			|| ((c >= 58) && (c <= 64))
@@ -1136,6 +1157,13 @@ bool isSymbol (char c) { // Если текущий элемент являет�
 		return true;
 	else
 		return false;
+}
+
+string deleteChar(string inputStr, int size, int pos) {
+	for (int i = pos; i < (size - 1); i++)
+		inputStr[i] = inputStr[i + 1];
+	inputStr.erase(size - 1);
+	return inputStr;
 }
 
 void reverseOutput(string inputStr) {
