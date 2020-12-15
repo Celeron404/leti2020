@@ -983,7 +983,7 @@ void practicalWork4() {
 				<< "The search with the Boyer-Moore alghoritm has been completed for " << stopTimeInSeconds << " seconds. \n";
 		else
 			cout << "Substring was not found!\n"
-				<< "The search with the Boyer-Moore alghoritm has NOT been completed for " << stopTimeInSeconds << " seconds! \n";
+				<< "The search with the Boyer-Moore alghoritm has NOT been completed for " << stopTimeInSeconds << " seconds! \n"; 
 
 	}  while (choiseNextAction());
 
