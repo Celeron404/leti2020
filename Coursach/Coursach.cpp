@@ -55,6 +55,8 @@ void reverseOutput(string);
 int countOfWords(string);
 void wordOutput(string, int, int);
 int longestWord(string);
+int linearSubscringSearch(string, string);
+int boyerMoorSubscringSearch(string, string);
 
 int main()
 {
@@ -146,6 +148,9 @@ void practicalWork1() {
 		cout << "Binary representation of number " << inputDouble << ":\n";
 		doubleToBinary(inputInt2[1], inputInt2[0]);
 	} while (choiseNextAction());
+
+	cout << "\nEnd of the first practical work. \n";
+	system("pause");
 }
 
 void intToBinary(int value) {
@@ -420,6 +425,9 @@ void practicalWork2() {
 		printArray(copiedArray); // Отладка
 		cout << "The switching has been completed for " << stopTimeInNanoSeconds << " nanoseconds. \n";
 	} while (choiseNextAction());
+
+	cout << "\nEnd of the second practical work. \n";
+	system("pause");
 }
 
 void createAndPrintRandomArray(int inputArray[]) {
@@ -831,6 +839,9 @@ void practicalWork3() {
 			break;
 		}
 	} while (choiseNextAction());
+
+	cout << "\nEnd of the third practical work. \n";
+	system("pause");
 }
 
 void practicalWork4() {
@@ -937,6 +948,47 @@ void practicalWork4() {
 			cout << endl;
 		}
 	cout << endl;
+	system("pause");
+
+	time_point<steady_clock> startTimer = steady_clock::now(); // Нужно для таймера
+	float stopTimeInSeconds = stopSecondsTimer(startTimer);
+	cout << "\nTask 5."
+		<< "\nSearching substring in the string.\n";
+	cout << "\nEntered text without innecessary characters, spaces and case of letters: \n";
+	cout << sourceStr << endl ; // Выводим ещё раз очищенный от мусора текст, чтобы пользователь понимал, где и что ищется
+
+	do {
+		cout << "\nEnter the subsctring (only English). For ending press Enter... \n>> ";
+		string substring;
+		cin.ignore(32767, '\n');
+		getline(cin, substring);
+		cout << "\nYou entered: \n" << substring << endl;
+
+		// Используем таймер для засечения разницы времени между разными методами поиска подстроки в строке
+		startTimer = steady_clock::now();
+		int substrPos = linearSubscringSearch(sourceStr, substring);
+		stopTimeInSeconds = stopSecondsTimer(startTimer);
+		if (substrPos != -1)
+			cout << "Position of substring: " << substrPos << endl
+				<< "The lineary search has been completed for " << stopTimeInSeconds << " seconds. \n";
+		else
+			cout << "Substring was not found!\n"
+				<< "The lineary search has NOT been completed for " << stopTimeInSeconds << " seconds! \n";
+
+		startTimer = steady_clock::now();
+		substrPos = boyerMoorSubscringSearch(sourceStr, substring);
+		stopTimeInSeconds = stopSecondsTimer(startTimer);
+		if (substrPos != -1)
+			cout << "Position of substring: " << substrPos << endl
+				<< "The search with the Boyer-Moore alghoritm has been completed for " << stopTimeInSeconds << " seconds. \n";
+		else
+			cout << "Substring was not found!\n"
+				<< "The search with the Boyer-Moore alghoritm has NOT been completed for " << stopTimeInSeconds << " seconds! \n";
+
+	}  while (choiseNextAction());
+
+	cout << "\nEnd of the fourth and last practical work."
+		<< "\nThanks for the attention! \n";
 	system("pause");
 }
 
@@ -1260,4 +1312,25 @@ int longestWord(string inputStr) {
 		} while ((inputStr[i] != ' ') && (i < arrSize));
 	}
 	return maxWordSize;
+}
+
+int linearSubscringSearch(string inputStr, string substr) {
+	int mainSize = inputStr.size();
+	int subSize = substr.size();
+	bool isFounded = false;
+	for (int i = 0; i < mainSize; i++) {
+		int pos = i;
+		for (int j = 0; ((inputStr[i] == substr[j]) && (j < subSize)); j++, i++) {
+			if (j == (subSize - 1)) {
+				isFounded = true;
+				return pos;
+			}
+		}
+	}
+	if (!isFounded)
+		return -1;
+}
+
+int boyerMoorSubscringSearch(string inputStr, string substr) {
+	return -1;
 }
