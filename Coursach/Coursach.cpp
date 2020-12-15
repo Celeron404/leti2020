@@ -54,6 +54,7 @@ string deleteChar(string, int, int);
 void reverseOutput(string);
 int countOfWords(string);
 void wordOutput(string, int, int);
+int longestWord(string);
 
 int main()
 {
@@ -894,29 +895,43 @@ void practicalWork4() {
 
 	cout << "\nTask 4."
 		<< "\nDisplay text in columns: \n";
-	cout << countOfWords(sourceStr) << endl << endl;
-	int size = sourceStr.size();
+	int arrSize = sourceStr.size();
+	int lWord = longestWord(sourceStr);
 	int pos = 0;
 	if ((countOfWords(sourceStr) % 2) == 0) {
-		while (pos < size) {
+		while (pos < arrSize) {
 			for (int i = 0; i < 2; i++) { // Вывод по 2 слова в строку
-				while ((sourceStr[pos] != ' ') && (pos < size)) {
+				short width = 0;
+				while ((sourceStr[pos] != ' ') && (pos < arrSize)) {
 					cout << sourceStr[pos];
 					pos++;
+					width++;
 				}
 				pos++;
+				while (width < lWord) {
+					cout << ' ';
+					width++;
+				}
 				cout << '\t';
 			}
 			cout << endl;
 		}
 	} else
-		while (pos < size) {
+		while (pos < arrSize) {
 			for (int i = 0; i < 3; i++) { // Вывод по 3 слова в строку
-				while ((sourceStr[pos] != ' ') && (pos < size)) {
+				if (!(pos < arrSize))
+					break;
+				short width = 0;
+				while ((sourceStr[pos] != ' ') && (pos < arrSize)) {
 					cout << sourceStr[pos];
 					pos++;
+					width++;
 				}
 				pos++;
+				while (width < lWord) {
+					cout << ' ';
+					width++;
+				}
 				cout << '\t';
 			}
 			cout << endl;
@@ -1232,5 +1247,17 @@ void wordOutput(string inputStr, int size, int pos) {
 }
 
 int longestWord(string inputStr) {
-	
+	int arrSize = inputStr.size();
+	int maxWordSize = 0;
+	int wordSize;
+	for (int i = 0; i < arrSize; i++) {
+		wordSize = 0;
+		do {
+			wordSize++;
+			if (wordSize > maxWordSize)
+				maxWordSize = wordSize;
+			i++;
+		} while ((inputStr[i] != ' ') && (i < arrSize));
+	}
+	return maxWordSize;
 }
