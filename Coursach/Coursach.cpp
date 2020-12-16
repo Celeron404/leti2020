@@ -56,7 +56,8 @@ int countOfWords(string);
 void wordOutput(string, int, int);
 int longestWord(string);
 int linearSubscringSearch(string, string);
-int boyerMoorSubscringSearch(string, string);
+int bouyerMooreSubstringSearch(string, string);
+void badCharHeuristic(string, int, int[]);
 
 int main()
 {
@@ -958,7 +959,7 @@ void practicalWork4() {
 	cout << sourceStr << endl ; // Выводим ещё раз очищенный от мусора текст, чтобы пользователь понимал, где и что ищется
 
 	do {
-		cout << "\nEnter the subsctring (only English). For ending press Enter... \n>> ";
+		cout << "\nEnter the subsctring (only English, only ASCII characters). For ending press Enter... \n>> ";
 		string substring;
 		cin.ignore(32767, '\n');
 		getline(cin, substring);
@@ -966,21 +967,22 @@ void practicalWork4() {
 
 		// Используем таймер для засечения разницы времени между разными методами поиска подстроки в строке
 		startTimer = steady_clock::now();
-		int substrPos = linearSubscringSearch(sourceStr, substring);
+		int subStrPos = linearSubscringSearch(sourceStr, substring);
 		stopTimeInSeconds = stopSecondsTimer(startTimer);
-		if (substrPos != -1)
-			cout << "Position of substring: " << substrPos << endl
-				<< "The lineary search has been completed for " << stopTimeInSeconds << " seconds. \n";
+		if (subStrPos != -1)
+			cout << "Position of substring: " << subStrPos << endl
+				<< "The lineary search has been completed for " << fixed << stopTimeInSeconds << " seconds. \n";
 		else
 			cout << "Substring was not found!\n"
-				<< "The lineary search has NOT been completed for " << stopTimeInSeconds << " seconds! \n";
+				<< "The lineary search has NOT been completed for " << fixed << stopTimeInSeconds << " seconds! \n";
 
+		subStrPos = -1;
 		startTimer = steady_clock::now();
-		substrPos = boyerMoorSubscringSearch(sourceStr, substring);
+		subStrPos = bouyerMooreSubstringSearch(sourceStr, substring);
 		stopTimeInSeconds = stopSecondsTimer(startTimer);
-		if (substrPos != -1)
-			cout << "Position of substring: " << substrPos << endl
-				<< "The search with the Boyer-Moore alghoritm has been completed for " << stopTimeInSeconds << " seconds. \n";
+		if (subStrPos != -1)
+			//cout << "Position of substring: " << subStrPos << endl // Отладка
+			cout << "The search with the Boyer-Moore alghoritm has been completed for " << stopTimeInSeconds << " seconds. \n";
 		else
 			cout << "Substring was not found!\n"
 				<< "The search with the Boyer-Moore alghoritm has NOT been completed for " << stopTimeInSeconds << " seconds! \n"; 
@@ -1331,6 +1333,35 @@ int linearSubscringSearch(string inputStr, string substr) {
 		return -1;
 }
 
-int boyerMoorSubscringSearch(string inputStr, string substr) {
+int bouyerMooreSubstringSearch(string mainStr, string subStr)
+{
+	int mainSize = subStr.size();
+	int subSize = mainStr.size();
+	int badchar[256];
+	badCharHeuristic(subStr, mainSize, badchar);
+	int s = 0;//s is shift of the pattern with respect to text
+	while (s <= (subSize - mainSize))
+	{
+		int j = mainSize - 1;
+		while (j >= 0 && subStr[j] == mainStr[s + j])
+			j--;
+		if (j < 0)
+		{
+			return s;
+		}
+		else
+			s += max(1, j - badchar[mainStr[s + j]]);
+	}
 	return -1;
+}
+
+void badCharHeuristic(string str, int size, int badchar[256])
+{
+	int i;
+	//Initialize all occurrences as -1
+	for (i = 0; i < 256; i++)
+		badchar[i] = -1;
+	//Fill the actual value of last occurrence of a character
+	for (i = 0; i < size; i++)
+		badchar[(int)str[i]] = i;
 }
