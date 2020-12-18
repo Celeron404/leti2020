@@ -665,7 +665,6 @@ long long stopNanoSecondsTimer(time_point<steady_clock> startTimer) {
 
 void practicalWork3() {
 	int order;
-	system("CLS");
 	cout << "Solution of task \"Arythmetics of pointers. Matrixes\". \n\n"
 		<< "Task 1. Visualisation of filling the matrix. \n"
 		<< "Enter the order of matrix... \n>> ";
@@ -846,7 +845,6 @@ void practicalWork3() {
 }
 
 void practicalWork4() {
-	system("CLS");
 	cout << "Solution of task \"Working with a text string\". \n\n"
 		<< "Task 1. Editing text. \n";
 	string sourceStr;
@@ -869,7 +867,7 @@ void practicalWork4() {
 				cout << "\nEnter the string for edit (only English). For ending press Enter... \n>> ";
 				cin.ignore(32767, '\n');
 				getline(cin, sourceStr);
-				cout << "You entered: \n" << sourceStr << endl;
+				cout << "\nYou entered: \n" << sourceStr << endl;
 			break;
 		case 2:
 			ifstream file;
@@ -881,7 +879,7 @@ void practicalWork4() {
 				getline(cin, path);
 				file.open(path);
 				if (!file.is_open()) {
-					cout << "Error opening file! \n";
+					cout << "Error opening file! Please restart the program! \n";
 					continue;
 				}
 				getline(file, sourceStr);
@@ -899,52 +897,65 @@ void practicalWork4() {
 	cout << sourceStr << endl << endl;
 	system("pause");
 
-	cout << "\nTask 3."
+	cout << "\nTask 3 (var. 1)."
 		<< "\nOutput words in reverse order: \n";
 	reverseOutput(sourceStr);
 	cout << endl;
 	system("pause");
 
-	cout << "\nTask 4."
-		<< "\nDisplay text in columns: \n";
-	int arrSize = sourceStr.size();
-	int lWord = longestWord(sourceStr);
-	int pos = 0;
+	/*
+	Данный алгоритм может показаться избыточным в реализации,
+	т. к. изначально он разрабатывался под вывод слов в колонках по левому выравниванию и был переработан минимальными усилиями - создан небольшой массив размера длины самого длинного слова в тексте, на вывод подаётся этот массив, т. к. cout умеет выравнивать целые слова. Таким образом не приходится задумываться над тем, как выравнивать по правому краю слова посимвольно.
+	Его можно переработать более оптимизированно/изящно следующими путями:
+		1) Поместив текст пословно в двумерный массив, где каждая строка/столбец (кому как удобно) содержит отдельно слово, на вывод соответственно будет подаваться строка/столбец целиком, форматировать в таком случае будет проще.
+		В текущем же алгоритме схожая реализация.
+		2) Без создания доп. массивов с помощью каретки выводить слова по правому выравниванию.
+		Этот вариант предпочтительнее, но требует больше трудозатрат.
+	Варианты не единственные, можно придумать более изящные.
+	*/
+	cout << "\nTask 4 (var. 7)."
+		<< "\nDisplaying right aligned text in columns: \n";
+	int arrSize = sourceStr.size(); // Определение количества символов в тексте, очищенном от мусора
+	int lWord = longestWord(sourceStr); // Определение самого длинного слова для корректного вывода в ячейках далее
+	int pos = 0; // Текущий индекс, по которому передаётся на вывод элемент массива с текстом
+	
+	char *word = new char[lWord]; // Массив, в который будет записываться текущее слово
+	for (int t = 0; t < lWord; t++)
+		word[t] = 0;
+	// Согласно постановке задачи, в зависимости от чётности-нечётности текст выводится либо в 2, либо в 3 колонки.
 	if ((countOfWords(sourceStr) % 2) == 0) {
 		while (pos < arrSize) {
 			for (int i = 0; i < 2; i++) { // Вывод по 2 слова в строку
-				short width = 0;
+				short j = 0; // Текущая позиция внутри массива текущего слова (word)
 				while ((sourceStr[pos] != ' ') && (pos < arrSize)) {
-					cout << sourceStr[pos];
+					word[j] = sourceStr[pos];
 					pos++;
-					width++;
+					j++;
 				}
-				pos++;
-				while (width < lWord) {
-					cout << ' ';
-					width++;
-				}
-				cout << '\t';
+				word[j] = 0; // Установка конца слова для корректного вывода
+				cout << setw(lWord + 1) << right << word;
+				pos++; // Пропуск пробела в тексте
+				for (int t = 0; t < lWord; t++)
+					word[t] = 0; // Заполнение нулями для очистки, чтобы можно было отобразить следующее слово
 			}
 			cout << endl;
 		}
-	} else
-		while (pos < arrSize) {
+	} else 
+		while (pos < arrSize) { // Ниже всё аналогично тому, что было выше.
 			for (int i = 0; i < 3; i++) { // Вывод по 3 слова в строку
 				if (!(pos < arrSize))
 					break;
-				short width = 0;
+				short j = 0;
 				while ((sourceStr[pos] != ' ') && (pos < arrSize)) {
-					cout << sourceStr[pos];
+					word[j] = sourceStr[pos];
 					pos++;
-					width++;
+					j++;
 				}
+				word[j] = 0;
+				cout << setw(lWord + 1) << right << word;
 				pos++;
-				while (width < lWord) {
-					cout << ' ';
-					width++;
-				}
-				cout << '\t';
+				for (int t = 0; t < lWord, word[t] != 0; t++)
+					word[t] = 0;
 			}
 			cout << endl;
 		}
@@ -953,7 +964,7 @@ void practicalWork4() {
 
 	time_point<steady_clock> startTimer = steady_clock::now(); // Нужно для таймера
 	float stopTimeInSeconds = stopSecondsTimer(startTimer);
-	cout << "\nTask 5."
+	cout << "\nTask 5 (with additional (odd) task)."
 		<< "\nSearching substring in the string.\n";
 	cout << "\nEntered text without innecessary characters, spaces and case of letters: \n";
 	cout << sourceStr << endl ; // Выводим ещё раз очищенный от мусора текст, чтобы пользователь понимал, где и что ищется
@@ -970,7 +981,7 @@ void practicalWork4() {
 		int subStrPos = linearSubscringSearch(sourceStr, substring);
 		stopTimeInSeconds = stopSecondsTimer(startTimer);
 		if (subStrPos != -1)
-			cout << "Position of substring: " << subStrPos << endl
+			cout << "Position of substring (first letter, ): " << subStrPos << endl
 				<< "The lineary search has been completed for " << fixed << stopTimeInSeconds << " seconds. \n";
 		else
 			cout << "Substring was not found!\n"
@@ -981,11 +992,9 @@ void practicalWork4() {
 		subStrPos = bouyerMooreSubstringSearch(sourceStr, substring);
 		stopTimeInSeconds = stopSecondsTimer(startTimer);
 		if (subStrPos != -1)
-			//cout << "Position of substring: " << subStrPos << endl // Отладка
 			cout << "The search with the Boyer-Moore alghoritm has been completed for " << stopTimeInSeconds << " seconds. \n";
 		else
-			cout << "Substring was not found!\n"
-				<< "The search with the Boyer-Moore alghoritm has NOT been completed for " << stopTimeInSeconds << " seconds! \n"; 
+			cout << "The search with the Boyer-Moore alghoritm has NOT been completed for " << stopTimeInSeconds << " seconds! \n"; 
 
 	}  while (choiseNextAction());
 
