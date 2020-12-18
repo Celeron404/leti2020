@@ -840,6 +840,79 @@ void practicalWork3() {
 		}
 	} while (choiseNextAction());
 
+	cout << "\nAdditional (5-th) task (var. 6). Finding a magic square.";
+	do {
+		cout << "\nInitial random array: \n";
+		for (int i = 0; i < order; i++) {
+			for (int j = 0; j < order; j++) {
+				*(ptrarray + i * order + j) = 1 + rand() % 100;
+				cout << setw(4) << *(ptrarray + i * order + j);
+			}
+			cout << endl;
+		}
+		Sleep(200);
+		cout << "\n In process: \n";
+		bool isMagic = true;
+		int sum = 0;
+		int i = 0; // Текущая строка
+		for (int j = 0; j < order; j++) // Получение суммы первой строки, с которой в дальнейшем сравниваются остальные
+			sum += *(ptrarray + i * order + j);
+		int firstSum = sum;
+		cout << "1-th row sum: " << firstSum << endl;
+		Sleep(200);
+		
+		while (true) {
+			do { // Получение сумм строк
+				sum = 0;
+				i++;
+				for (int j = 0; j < order; j++)
+					sum += *(ptrarray + i * order + j);
+				cout << i + 1 << "-th row sum: " << sum << endl;
+				Sleep(200);
+				isMagic = (sum == firstSum) ? true : false;
+			} while (isMagic && (i < order - 1));
+			if (!isMagic)
+				break;
+
+			i = -1;
+			do {
+				sum = 0;
+				i++; // Текущая колонка
+				for (int j = 0; j < order; j++)
+					sum += *(ptrarray + j * order + i);
+				cout << i + 1 << "-th column sum: " << sum << endl;
+				Sleep(200);
+				isMagic = (sum == firstSum) ? true : false;
+			} while (isMagic && (i < order - 1));
+			if (!isMagic)
+				break;
+
+			sum = 0;
+			for (int j = 0; j < order; j++)
+				sum += *(ptrarray + j * order + j);
+			cout << "Main diagonal sum: " << sum << endl;
+			Sleep(200);
+			isMagic = (sum == firstSum) ? true : false;
+			if (!isMagic)
+				break;
+
+			sum = 0;
+			for (int j = 0; j < order; j++)
+				sum += *(ptrarray + j * order + (order - 1 - j));
+			cout << "Counter-diagonal sum: " << sum << endl;
+			Sleep(200);
+			isMagic = (sum == firstSum) ? true : false;
+			if (!isMagic)
+				break;
+			break;
+		}
+
+		if (isMagic)
+			cout << "\nThis square is so magic!\n";
+		else
+			cout << "\nThis square is not magic. =(\n";
+	} while (choiseNextAction());
+			   		 
 	cout << "\nEnd of the third practical work. \n";
 	system("pause");
 }
@@ -1046,6 +1119,7 @@ void snakeAnimation(int arr[], int order, short cellSize, short delay) {
 	if (order % 2 == 0)
 		for (int i = 0; i < order + 1; i++)
 			cout << endl;
+	cout << endl;
 }
 
 void spiralAnimation(int arr[], int order, short cellSize, short delay) {
@@ -1107,6 +1181,7 @@ void spiralAnimation(int arr[], int order, short cellSize, short delay) {
 
 	for (int i = 0; i <= (order / 2); i++)
 		cout << endl;
+	cout << endl;
 }
 
 void consistentPermutation(int arr[], int order) {
