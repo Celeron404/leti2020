@@ -981,7 +981,7 @@ void practicalWork4() {
 		int subStrPos = linearSubscringSearch(sourceStr, substring);
 		stopTimeInSeconds = stopSecondsTimer(startTimer);
 		if (subStrPos != -1)
-			cout << "Position of substring (first letter, ): " << subStrPos << endl
+			cout << "Position of substring (first letter): " << subStrPos << endl
 				<< "The lineary search has been completed for " << fixed << stopTimeInSeconds << " seconds. \n";
 		else
 			cout << "Substring was not found!\n"
